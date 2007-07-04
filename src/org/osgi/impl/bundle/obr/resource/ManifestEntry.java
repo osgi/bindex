@@ -22,7 +22,7 @@ import java.util.*;
 
 public class ManifestEntry implements Comparable {
 	String		name;
-	VersionImpl	version;
+	VersionRange	version;
 	Map			attributes;
 	public Map	directives;
 	public Set	uses;
@@ -31,7 +31,7 @@ public class ManifestEntry implements Comparable {
 		this.name = name;
 	}
 
-	public ManifestEntry(String name, VersionImpl version) {
+	public ManifestEntry(String name, VersionRange version) {
 		this.name = name;
 		this.version = version;
 	}
@@ -46,10 +46,10 @@ public class ManifestEntry implements Comparable {
 		return name;
 	}
 
-	public VersionImpl getVersion() {
+	public VersionRange getVersion() {
 		if (version != null)
 			return version;
-		return new VersionImpl("0");
+		return new VersionRange("0");
 	}
 
 	/*
@@ -89,7 +89,7 @@ public class ManifestEntry implements Comparable {
 				if (parameter.key.equalsIgnoreCase("version")
 						|| parameter.key
 								.equalsIgnoreCase("specification-version"))
-					this.version = new VersionImpl(parameter.value);
+					this.version = new VersionRange(parameter.value);
 				break;
 
 			case Parameter.DIRECTIVE :

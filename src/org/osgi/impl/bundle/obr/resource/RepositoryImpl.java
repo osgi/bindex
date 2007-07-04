@@ -173,10 +173,10 @@ public class RepositoryImpl implements Repository {
 						sb.append(")");
 						String version = parser.getAttributeValue(null,
 								"specification-version");
-						VersionImpl v = new VersionImpl("0");
+						VersionRange v = new VersionRange("0");
 						if (version != null) {
 							sb.append("(version=");
-							sb.append(v= new VersionImpl(version));
+							sb.append(v= new VersionRange(version));
 							sb.append(")");
 						}
 						sb.append(")");
@@ -194,7 +194,7 @@ public class RepositoryImpl implements Repository {
 						String version = parser.getAttributeValue(null,
 								"specification-version");
 						if (version != null) {
-							capability.addProperty("version", new VersionImpl(
+							capability.addProperty("version", new VersionRange(
 									version));
 						}
 						resource.addCapability(capability);
@@ -217,7 +217,7 @@ public class RepositoryImpl implements Repository {
 							resource.setPresentationName(value);
 						}
 						else if (key.equals("bundle-version"))
-							resource.setVersion(new VersionImpl(value));
+							resource.setVersion(new VersionRange(value));
 						else {
 							resource.put(key, value);
 						}

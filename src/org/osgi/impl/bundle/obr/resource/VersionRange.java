@@ -22,7 +22,7 @@ import java.util.regex.*;
 
 import org.osgi.framework.*;
 
-public class VersionImpl {
+public class VersionRange {
 	Version			high;
 	Version			low;
 	char			start	= '[';
@@ -32,7 +32,7 @@ public class VersionImpl {
 	static Pattern	RANGE	= Pattern.compile("(\\(|\\[)(" + V + "),(" + V +
 									")(\\)|\\])");
 
-	public VersionImpl(String string) {
+	public VersionRange(String string) {
 		string = string.trim();
 		Matcher m = RANGE.matcher(string);
 		if (m.matches()) {

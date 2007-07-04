@@ -30,7 +30,7 @@ public class ResourceImpl implements Resource {
 	List			requirements	= new ArrayList();
 	URL				url;
 	String			symbolicName;
-	VersionImpl		version;
+	VersionRange		version;
 	List			categories		= new ArrayList();
 	long			size			= -1;
 	String			id;
@@ -42,10 +42,10 @@ public class ResourceImpl implements Resource {
 
 
 	public ResourceImpl(RepositoryImpl repository, String name,
-			VersionImpl version) {
+			VersionRange version) {
 		this.version = version;
 		if ( version == null)
-			this.version = new VersionImpl("0");
+			this.version = new VersionRange("0");
 		this.symbolicName = name;
 		this.repository = repository;
 	}
@@ -65,9 +65,9 @@ public class ResourceImpl implements Resource {
 			map.put(PRESENTATION_NAME, presentationName);
 		String v = parser.getAttributeValue(null, "version");
 		if (v == null)
-			setVersion(new VersionImpl("0"));
+			setVersion(new VersionRange("0"));
 		else
-			setVersion(new VersionImpl(v));
+			setVersion(new VersionRange(v));
 
 		setURL(toURL(parser.getAttributeValue(null, "uri")));
 
@@ -237,13 +237,13 @@ public class ResourceImpl implements Resource {
 
 	public Version getVersion() {
 		if (version == null)
-			version = new VersionImpl("0");
+			version = new VersionRange("0");
 		return version.low;
 	}
 
-	void setVersion(VersionImpl version) {
+	void setVersion(VersionRange version) {
 		if (version == null)
-			this.version = new VersionImpl("0");
+			this.version = new VersionRange("0");
 		else
 			this.version = version;
 	}

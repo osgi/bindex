@@ -343,7 +343,7 @@ public class BundleInfo {
 		filter.append("=");
 		filter.append(pack.getName());
 		filter.append(")");
-		VersionImpl version = pack.getVersion();
+		VersionRange version = pack.getVersion();
 		if (version != null) {
 			if ( version.isRange() ) {
 				filter.append("(version");

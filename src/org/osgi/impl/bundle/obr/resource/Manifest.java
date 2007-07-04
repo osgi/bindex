@@ -34,7 +34,7 @@ public class Manifest extends Hashtable {
 	Vector				duplicates	= new Vector();
 	final static String	wordparts	= "~!@#$%^&*_:/?><.-+";
 	ManifestEntry		bsn;
-	VersionImpl			version;
+	VersionRange			version;
 	ManifestEntry		host;
 	List				require;
 
@@ -107,10 +107,10 @@ public class Manifest extends Hashtable {
 				}
 				if (header.equals("bundle-version")) {
 					try {
-						version = new VersionImpl(value.trim());
+						version = new VersionRange(value.trim());
 					}
 					catch (Exception e) {
-						version = new VersionImpl("0");
+						version = new VersionRange("0");
 						System.err.println("Invalid version attr for: " + bsn
 								+ " value is " + value);
 					}
@@ -311,9 +311,9 @@ public class Manifest extends Hashtable {
 			return null;
 	}
 
-	public VersionImpl getVersion() {
+	public VersionRange getVersion() {
 		if (version == null)
-			return new VersionImpl("0");
+			return new VersionRange("0");
 		return version;
 	}
 

@@ -45,7 +45,7 @@ public class CapabilityImpl implements Capability {
 				if ( "nummeric".equals(type))
 					v = new Long(value);
 				else if ( "version".equals(type))
-					v = new VersionImpl(value);
+					v = new VersionRange(value);
 				addProperty(name,v);
 			}
 			parser.next();
@@ -87,7 +87,7 @@ public class CapabilityImpl implements Capability {
 				String type = null;
 				if (value instanceof Number )
 					type = "number";
-				else if (value.getClass() == VersionImpl.class)
+				else if (value.getClass() == VersionRange.class)
 					type = "version";
 				if (type != null)
 					p.addAttribute("t", type);

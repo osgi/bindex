@@ -41,7 +41,7 @@ public class TestVersionImpl extends TestCase {
 	}
 
 	void tv(String string) {
-		VersionImpl v = new VersionImpl(string);
+		VersionRange v = new VersionRange(string);
 		String s = v.toString();
 		assertEquals(string,s);
 	}
