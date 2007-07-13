@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractURLStreamHandlerService.java 4729 2007-04-06 02:38:06Z bjhargrave $
+ * $Id$
  * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
@@ -32,7 +32,7 @@ import org.osgi.impl.bundle.obr.resource.*;
  * OSGi Framework to map to an http service or it can be expanded on the web
  * server's file system.
  * 
- * @version $Revision: 168 $
+ * @version $Revision$
  */
 public class Index {
 	static String			repositoryFileName	= "repository.xml";

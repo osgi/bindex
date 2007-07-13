@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractURLStreamHandlerService.java 4729 2007-04-06 02:38:06Z bjhargrave $
+ * $Id$
  * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
@@ -28,7 +28,7 @@ import org.osgi.service.obr.Resource;
  * Convert a bundle to a generic resource description and store its local
  * dependencies (like for example a license file in the JAR) in a zip file.
  * 
- * @version $Revision: 209 $
+ * @version $Revision$
  */
 public class BundleInfo {
 	Manifest	manifest;

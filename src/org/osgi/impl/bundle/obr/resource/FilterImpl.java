@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractURLStreamHandlerService.java 4729 2007-04-06 02:38:06Z bjhargrave $
+ * $Id$
  * 
  * Copyright (c) 2000 Gatespace AB. All Rights Reserved.
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.

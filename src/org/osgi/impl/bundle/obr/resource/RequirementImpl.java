@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractURLStreamHandlerService.java 4729 2007-04-06 02:38:06Z bjhargrave $
+ * $Id$
  * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
  * Implements the Requirement interface.
  * 
  * 
- * @version $Revision: 74 $
+ * @version $Revision$
  */
 public class RequirementImpl implements Requirement {
 	int		id;
