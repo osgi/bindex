@@ -29,8 +29,8 @@ public class VersionRange implements Comparable {
 	char end = ']';
 
 	static String V = "[0-9]+(\\.[0-9]+(\\.[0-9]+(\\.[a-zA-Z0-9_-]+)?)?)?";
-	static Pattern RANGE = Pattern.compile("(\\(|\\[)(" + V + "),(" + V
-			+ ")(\\)|\\])");
+	static Pattern RANGE = Pattern.compile("(\\(|\\[)\\s*(" + V + ")\\s*,\\s*(" + V
+			+ ")\\s*(\\)|\\])");
 
 	public VersionRange(String string) {
 		string = string.trim();
