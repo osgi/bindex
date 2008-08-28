@@ -40,7 +40,7 @@ public class VersionRange implements Comparable {
 			low = new Version(m.group(2));
 			high = new Version(m.group(6));
 			end = m.group(10).charAt(0);
-			if (low.compareTo(high) >= 0)
+			if (low.compareTo(high) > 0)
 				throw new IllegalArgumentException(
 						"Low Range is higher than High Range: " + low + "-"
 								+ high);

@@ -35,15 +35,14 @@ import org.osgi.impl.bundle.obr.resource.*;
  * @version $Revision$
  */
 public class Index {
-	static String			repositoryFileName	= "repository.xml";
-	static URL				licenseURL			= null;
-	static boolean			quiet				= false;
-	static String			name				= "Untitled";
-	static String			urlTemplate			= null;
-	static File				rootFile			= new File("")
-														.getAbsoluteFile();
-	static RepositoryImpl	repository;
-	static String			root;
+	static String repositoryFileName = "repository.xml";
+	static URL licenseURL = null;
+	static boolean quiet = false;
+	static String name = "Untitled";
+	static String urlTemplate = null;
+	static File rootFile = new File("").getAbsoluteFile();
+	static RepositoryImpl repository;
+	static String root;
 
 	/**
 	 * Main entry. See -help for options.
@@ -63,35 +62,28 @@ public class Index {
 			try {
 				if (args[i].startsWith("-n"))
 					name = args[++i];
-				else
-					if (args[i].startsWith("-r")) {
-						repositoryFileName = args[++i];
-						repository = new RepositoryImpl(new File(
-								repositoryFileName).getAbsoluteFile().toURL());
-					}
-					else
-						if (args[i].startsWith("-q"))
-							quiet = true;
-						else
-							if (args[i].startsWith("-t"))
-								urlTemplate = args[++i];
-							else
-								if (args[i].startsWith("-l")) {
-									licenseURL = new URL(new File("").toURL(),
-											args[++i]);
-								}
-								else
-									if (args[i].startsWith("-help")) {
-										System.err
-												.println("bindex [-t \"%s\" symbolic name \"%v\" version \"%f\" filename \"%p\" dirpath ] [ -r repository.(xml|zip) ] [-help] [-l file:license.html ] [-quiet] <jar file>*");
-									}
-									else {
-										recurse(resources, new File(args[i]));
-									}
-			}
-			catch (Exception e) {
-				System.err.println("Error in " + args[i] + " : " +
-						e.getMessage());
+				else if (args[i].startsWith("-r")) {
+					repositoryFileName = args[++i];
+					repository = new RepositoryImpl(
+							new File(repositoryFileName).getAbsoluteFile()
+									.toURL());
+				} else if (args[i].startsWith("-q"))
+					quiet = true;
+				else if (args[i].startsWith("-d"))
+					rootFile = new File(args[++i]);
+				else if (args[i].startsWith("-t"))
+					urlTemplate = args[++i];
+				else if (args[i].startsWith("-l")) {
+					licenseURL = new URL(new File("").toURL(), args[++i]);
+				} else if (args[i].startsWith("-help")) {
+					System.err
+							.println("bindex [-t \"%s\" symbolic name \"%v\" version \"%f\" filename \"%p\" dirpath ] [-d rootFile] [ -r repository.(xml|zip) ] [-help] [-l file:license.html ] [-quiet] <jar file>*");
+				} else {
+					recurse(resources, new File(args[i]));
+				}
+			} catch (Exception e) {
+				System.err.println("Error in " + args[i] + " : "
+						+ e.getMessage());
 				e.printStackTrace();
 			}
 
@@ -131,8 +123,7 @@ public class Index {
 				zip.write(buffer, 0, buffer.length);
 				zip.closeEntry();
 				zip.close();
-			}
-			else {
+			} else {
 				fout.write(buffer);
 			}
 			fout.close();
@@ -163,15 +154,13 @@ public class Index {
 			for (int i = 0; i < list.length; i++) {
 				recurse(resources, new File(path, list[i]));
 			}
-		}
-		else {
+		} else {
 			if (path.getName().endsWith(".jar")) {
 				BundleInfo info = new BundleInfo(repository, path);
 				ResourceImpl resource = info.build();
 				if (urlTemplate != null) {
 					doTemplate(path, resource);
-				}
-				else
+				} else
 					resource.setURL(path.toURL());
 
 				resources.add(resource);
@@ -199,8 +188,10 @@ public class Index {
 	/**
 	 * Create the repository index
 	 * 
-	 * @param resources Set of resources
-	 * @param collected The output zip file
+	 * @param resources
+	 *            Set of resources
+	 * @param collected
+	 *            The output zip file
 	 * @throws IOException
 	 */
 	static Tag doIndex(Collection resources) throws IOException {
@@ -218,9 +209,12 @@ public class Index {
 	/**
 	 * Add the resource to the ZIP file, calculating the CRC etc.
 	 * 
-	 * @param zip The output ZIP file
-	 * @param name The name of the resource
-	 * @param actual The contents stream
+	 * @param zip
+	 *            The output ZIP file
+	 * @param name
+	 *            The name of the resource
+	 * @param actual
+	 *            The contents stream
 	 * @throws IOException
 	 */
 	static void addToZip(ZipOutputStream zip, String name, InputStream actual)

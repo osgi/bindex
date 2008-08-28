@@ -32,7 +32,7 @@ public class Manifest extends Hashtable {
 	String				location;
 	Native				_native[];
 	Vector				duplicates	= new Vector();
-	final static String	wordparts	= "~!@#$%^&*_:/?><.-+";
+	final static String	wordparts	= "~!@#$%^&*_/?><.-+";
 	ManifestEntry		bsn;
 	VersionRange			version;
 	ManifestEntry		host;
@@ -207,6 +207,8 @@ public class Manifest extends Hashtable {
 				}
 				else {
 					if (parameter.type == Parameter.ATTRIBUTE)
+						p.addParameter(parameter);
+					else if ( parameter.type == Parameter.DIRECTIVE )
 						p.addParameter(parameter);
 					else
 						p.addParameter(parameter);

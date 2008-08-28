@@ -242,9 +242,9 @@ public class BundleInfo {
 			StringBuffer sb = new StringBuffer();
 			sb.append("(&(symbolicname=");
 			sb.append(entry.getName());
-			sb.append(")(version>=");
-			sb.append(entry.getVersion());
-			sb.append("))");
+			sb.append(")" );
+			appendVersion(sb, entry.getVersion());
+			sb.append(")");
 			r.setFilter(sb.toString());
 			r.setComment("Required Host " + entry.getName() );
 			r.setExtend(true);
@@ -343,7 +343,24 @@ public class BundleInfo {
 		filter.append("=");
 		filter.append(pack.getName());
 		filter.append(")");
-		VersionRange version = pack.getVersion();
+		appendVersion(filter, pack.getVersion());
+		Map attributes = pack.getAttributes();
+		Set attrs = doImportPackageAttributes(req, filter, attributes);
+		if (attrs.size() > 0) {
+			String del = "";
+			filter.append("(mandatory:<*");
+			for (Iterator i = attrs.iterator(); i.hasNext();) {
+				filter.append(del);
+				filter.append(i.next());
+				del = ", ";
+			}
+			filter.append(")");
+		}
+		filter.append(")");
+		req.setFilter(filter.toString());
+	}
+
+	private void appendVersion(StringBuffer filter, VersionRange version) {
 		if (version != null) {
 			if ( version.isRange() ) {
 				filter.append("(version");
@@ -362,24 +379,10 @@ public class BundleInfo {
 			}
 			else {
 				filter.append("(version>=");
-				filter.append(pack.getVersion());
+				filter.append(version);
 				filter.append(")");
 			}
 		}
-		Map attributes = pack.getAttributes();
-		Set attrs = doImportPackageAttributes(req, filter, attributes);
-		if (attrs.size() > 0) {
-			String del = "";
-			filter.append("(mandatory:<*");
-			for (Iterator i = attrs.iterator(); i.hasNext();) {
-				filter.append(del);
-				filter.append(i.next());
-				del = ", ";
-			}
-			filter.append(")");
-		}
-		filter.append(")");
-		req.setFilter(filter.toString());
 	}
 
 	Set doImportPackageAttributes(RequirementImpl req, StringBuffer filter,
@@ -469,6 +472,13 @@ public class BundleInfo {
 					Object value = attributes.get(key);
 					capability.addProperty(key, value);
 				}
+			}
+		Map directives = pack.getDirectives();
+		if (directives != null)
+			for (Iterator at = directives.keySet().iterator(); at.hasNext();) {
+				String key = (String) at.next();
+				Object value = directives.get(key);
+				capability.addProperty(key, value);
 			}
 		return capability;
 	}

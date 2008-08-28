@@ -17,6 +17,7 @@
  */
 package org.osgi.impl.bundle.obr.resource;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.osgi.service.obr.Capability;
@@ -80,22 +81,43 @@ public class CapabilityImpl implements Capability {
 				Tag p = new Tag("p");
 				tag.addContent(p);
 				p.addAttribute("n", key);
-				if ( value != null )
-					p.addAttribute("v", value.toString());
+				if ( value != null ) {
+					p.addAttribute("v", valueString(value));
+					String type = null;
+					if (value instanceof Number )
+						type = "number";
+					else if (value.getClass() == VersionRange.class)
+						type = "version";
+					else if ( value.getClass().isArray() ) {
+						type = "set";
+					}
+					
+					if (type != null)
+						p.addAttribute("t", type);
+				}
 				else
 					System.out.println("Missing value " + key);
-				String type = null;
-				if (value instanceof Number )
-					type = "number";
-				else if (value.getClass() == VersionRange.class)
-					type = "version";
-				if (type != null)
-					p.addAttribute("t", type);
 			}
 		}
 		return tag;
 	}
 
+
+	private static String valueString(Object value) {
+		if ( value.getClass().isArray() ) {
+			StringBuffer buf = new StringBuffer();
+			for ( int i = 0; i < Array.getLength(value); i++) {
+				if ( i > 0 ) {
+					buf.append( "," );
+				}
+				buf.append( Array.get(value, i).toString() );
+			}
+			return buf.toString();
+		}
+		else {
+			return value.toString();
+		}
+	}
 
 	public String getName() {
 		return name;
