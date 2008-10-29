@@ -40,9 +40,8 @@ public class Index {
 	static boolean quiet = false;
 	static String name = "Untitled";
 	static String urlTemplate = null;
-	static File rootFile = new File("").getAbsoluteFile();
+	static URL root;
 	static RepositoryImpl repository;
-	static String root;
 
 	/**
 	 * Main entry. See -help for options.
@@ -55,8 +54,8 @@ public class Index {
 		System.err.println("(c) 2007 OSGi, All Rights Reserved");
 
 		Set resources = new HashSet();
-		root = rootFile.toURL().toString();
-		repository = new RepositoryImpl(rootFile.toURL());
+		root = new File("").getAbsoluteFile().toURL();
+		repository = new RepositoryImpl(root);
 
 		for (int i = 0; i < args.length; i++)
 			try {
@@ -69,9 +68,9 @@ public class Index {
 									.toURL());
 				} else if (args[i].startsWith("-q"))
 					quiet = true;
-				else if (args[i].startsWith("-d"))
-					rootFile = new File(args[++i]);
-				else if (args[i].startsWith("-t"))
+				else if (args[i].startsWith("-d")) {
+					root = new File(args[++i]).toURL();
+				} else if (args[i].startsWith("-t"))
 					urlTemplate = args[++i];
 				else if (args[i].startsWith("-l")) {
 					licenseURL = new URL(new File("").toURL(), args[++i]);
@@ -175,8 +174,8 @@ public class Index {
 		if (dir.endsWith("/"))
 			dir = dir.substring(0, dir.length() - 1);
 
-		if (dir.startsWith(root))
-			dir = dir.substring(root.length());
+		if (dir.startsWith(root.toString()))
+			dir = dir.substring(root.toString().length());
 
 		String url = urlTemplate.replaceAll("%v", "" + resource.getVersion());
 		url = url.replaceAll("%s", resource.getSymbolicName());
