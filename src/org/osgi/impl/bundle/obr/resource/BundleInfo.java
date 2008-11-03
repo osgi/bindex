@@ -269,16 +269,23 @@ public class BundleInfo {
 		for (Iterator i = entries.iterator(); i.hasNext();) {
 			ManifestEntry entry = (ManifestEntry) i.next();
 			RequirementImpl r = new RequirementImpl("bundle");
+			
+			String version = (String) entry.getAttributes().get("bundle-version");
+			if ( version == null )
+				version = "0";
+			VersionRange v = new VersionRange(version);
 
 			StringBuffer sb = new StringBuffer();
 			sb.append("(&(symbolicname=");
 			sb.append(entry.getName());
 			sb.append(")(version>=");
-			sb.append(entry.getVersion());
+			sb.append(v);
 			sb.append("))");
 			r.setFilter(sb.toString());
+			
+			
 			r.setComment("Require Bundle " + entry.getName() + "; "
-					+ entry.getVersion());
+					+ v);
 			if (entry.directives == null
 					|| "true".equalsIgnoreCase((String) entry.directives
 							.get("resolution")))
