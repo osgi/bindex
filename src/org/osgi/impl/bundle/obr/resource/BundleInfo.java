@@ -331,6 +331,8 @@ public class BundleInfo {
 
 			createImportFilter(requirement, "package", pack);
 			requirement.setComment("Import package " + pack);
+			String resolution = pack.getDirective("resolution");
+			requirement.setOptional("optional".equals(resolution));
 			requirements.add(requirement);
 		}
 		for (Iterator i = requirements.iterator(); i.hasNext();)

@@ -108,4 +108,18 @@ public class ManifestEntry implements Comparable {
 		return me;
 	}
 
+	public String getDirective(String directive) {
+		if ( directives == null )
+			return null;
+		
+		return (String) directives.get(directive);
+	}
+
+	public String getAttribute(String attribute) {
+		if ( attributes == null )
+			return null;
+		
+		return (String) attributes.get(attribute);
+	}
+
 }
