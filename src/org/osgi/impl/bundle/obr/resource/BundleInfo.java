@@ -357,6 +357,12 @@ public class BundleInfo {
 		appendVersion(filter, pack.getVersion());
 		Map attributes = pack.getAttributes();
 		Set attrs = doImportPackageAttributes(req, filter, attributes);
+		
+		// The next code is using the subset operator 
+		// to check mandatory attributes, it seems to be
+		// impossible to rewrite. It must assert that whateber
+		// is in mandatory: must be in any of the attributes.
+		// This is a fundamental shortcoming of the filter language.
 		if (attrs.size() > 0) {
 			String del = "";
 			filter.append("(mandatory:<*");
