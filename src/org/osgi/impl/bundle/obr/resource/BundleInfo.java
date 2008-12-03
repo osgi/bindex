@@ -374,19 +374,31 @@ public class BundleInfo {
 	private void appendVersion(StringBuffer filter, VersionRange version) {
 		if (version != null) {
 			if (version.isRange()) {
-				filter.append("(version");
-				filter.append(">");
-				if (version.includeLow())
-					filter.append("=");
-				filter.append(version.low);
-				filter.append(")");
+				if (version.includeLow()) {
+					filter.append("(version");
+					filter.append(">=");
+					filter.append(version.low);
+					filter.append(")");
+				}
+				else {
+					filter.append("(!(version");
+					filter.append("<=");
+					filter.append(version.low);
+					filter.append("))");
+				}
 
-				filter.append("(version");
-				filter.append("<");
-				if (version.includeHigh())
-					filter.append("=");
-				filter.append(version.high);
-				filter.append(")");
+				if ( version.includeHigh() ) {
+					filter.append("(version");
+					filter.append("<=");
+					filter.append(version.high);
+					filter.append(")");					
+				}
+				else {
+					filter.append("(!(version");
+					filter.append(">=");
+					filter.append(version.low);
+					filter.append("))");
+				}
 			} else {
 				filter.append("(version>=");
 				filter.append(version);
