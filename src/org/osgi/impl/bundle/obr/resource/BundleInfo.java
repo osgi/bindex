@@ -402,7 +402,7 @@ public class BundleInfo {
 				else {
 					filter.append("(!(version");
 					filter.append(">=");
-					filter.append(version.low);
+					filter.append(version.high);
 					filter.append("))");
 				}
 			} else {
