@@ -288,12 +288,12 @@ public class BundleInfo {
 			r.setFilter(sb.toString());
 
 			r.setComment("Require Bundle " + entry.getName() + "; " + v);
-			if (entry.directives == null
-					|| "true".equalsIgnoreCase((String) entry.directives
+			if (entry.directives != null
+					&& "optional".equalsIgnoreCase((String) entry.directives
 							.get("resolution")))
-				r.setOptional(false);
-			else
 				r.setOptional(true);
+			else
+				r.setOptional(false);
 			resource.addRequirement(r);
 		}
 	}
