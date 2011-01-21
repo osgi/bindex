@@ -42,6 +42,7 @@ public class Index {
 	static String urlTemplate = null;
 	static URL root;
 	static RepositoryImpl repository;
+	static String stylesheet = "http://www.osgi.org/www/obr2html.xsl";
 
 	/**
 	 * Main entry. See -help for options.
@@ -61,7 +62,9 @@ public class Index {
 			try {
 				if (args[i].startsWith("-n"))
 					name = args[++i];
-				else if (args[i].startsWith("-r")) {
+				else if (args[i].equals("-stylesheet")) {
+					stylesheet = args[++i];
+				} else if (args[i].startsWith("-r")) {
 					repositoryFileName = args[++i];
 					repository = new RepositoryImpl(
 							new File(repositoryFileName).getAbsoluteFile()
@@ -76,7 +79,15 @@ public class Index {
 					licenseURL = new URL(new File("").toURL(), args[++i]);
 				} else if (args[i].startsWith("-help")) {
 					System.err
-							.println("bindex [-t \"%s\" symbolic name \"%v\" version \"%f\" filename \"%p\" dirpath ] [-d rootFile] [ -r repository.(xml|zip) ] [-help] [-l file:license.html ] [-quiet] <jar file>*");
+							.println("bindex " //
+									+ "[-t \"%s\" symbolic name \"%v\" version \"%f\" filename \"%p\" dirpath ]\n" //
+									+ "[-d rootFile]\n" //
+									+ "[ -r repository.(xml|zip) ]\n" //
+									+ "[-help]\n" //
+									+ "[-l file:license.html ]\n" //
+									+ "[-quiet]\n" //
+									+ "[-stylesheet " + stylesheet + "  ]\n" //
+									+ "<jar file>*");
 				} else {
 					recurse(resources, new File(args[i]));
 				}
@@ -102,8 +113,8 @@ public class Index {
 					"UTF-8"));
 
 			pw.println("<?xml version='1.0' encoding='utf-8'?>");
-			pw
-					.println("<?xml-stylesheet type='text/xsl' href='http://www2.osgi.org/www/obr2html.xsl'?>");
+			pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet
+					+ "'?>");
 
 			tag.print(0, pw);
 			pw.close();
@@ -131,8 +142,7 @@ public class Index {
 		if (!quiet) {
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 			pw.println("<?xml version='1.0' encoding='utf-8'?>");
-			pw
-					.println("<?xml-stylesheet type='text/xsl' href='http://www2.osgi.org/www/obr2html.xsl'?>");
+			pw.println("<?xml-stylesheet type='text/xsl' href='"+stylesheet+"'?>");
 			tag.print(0, pw);
 			pw.close();
 		}
