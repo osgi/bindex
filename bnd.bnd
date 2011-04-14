@@ -1,8 +1,10 @@
-Private-Package: 		org.osgi.impl.bundle.*, \
-						org.osgi.service.obr.*,  \
-						org.osgi.framework.*,  \
-                        org.kxml2.*, \
-                        org.xmlpull.*
+Private-Package: org.osgi.service.obr.*,\
+	org.osgi.framework.*,\
+	org.kxml2.*,\
+	org.xmlpull.*,\
+	org.osgi.impl.bundle.bindex,\
+	org.osgi.impl.bundle.bindex.ant
+
 Include-Resource:       {LICENSE.txt},{about.html},{NOTICE.txt},{README}
 Bundle-Version: 		2.2
 Bundle-Vendor: 			OSGi Alliance
@@ -13,3 +15,14 @@ Bundle-License: 		http://www.apache.org/licenses/LICENSE-2.0;\
                         	link="http://www.apache.org/licenses/LICENSE-2.0"
 Main-Class: 			org.osgi.impl.bundle.bindex.Index
 
+Service-Component: *
+-buildpath: biz.aQute.bnd.annotation;version=1.42.0,\
+	jar/ant.jar;version=file,\
+	jar/kxml2-min.jar;version=file,\
+	jar/org.osgi.service.obr.jar;version=file,\
+	junit.osgi
+	
+Export-Package: org.osgi.service.bindex
+Import-Package: org.apache.tools.ant;resolution:=optional,\
+	org.apache.tools.ant.types;resolution:=optional,\
+	*

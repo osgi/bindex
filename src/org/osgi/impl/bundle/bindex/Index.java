@@ -35,14 +35,14 @@ import org.osgi.impl.bundle.obr.resource.*;
  * @version $Revision$
  */
 public class Index {
-	static String repositoryFileName = "repository.xml";
-	static URL licenseURL = null;
-	static boolean quiet = false;
-	static String name = "Untitled";
-	static String urlTemplate = null;
-	static URL root;
-	static RepositoryImpl repository;
-	static String stylesheet = "http://www.osgi.org/www/obr2html.xsl";
+	String repositoryFileName = "repository.xml";
+	URL licenseURL = null;
+	boolean quiet = false;
+	String name = "Untitled";
+	String urlTemplate = null;
+	URL root;
+	RepositoryImpl repository;
+	String stylesheet = "http://www.osgi.org/www/obr2html.xsl";
 
 	/**
 	 * Main entry. See -help for options.
@@ -51,6 +51,11 @@ public class Index {
 	 * @throws Exception
 	 */
 	public static void main(String args[]) throws Exception {
+	  Index index = new Index();
+	  index.run(args);
+	}
+	
+	protected void run(String args[]) throws Exception {
 		System.err.println("Bundle Indexer | v2.2");
 		System.err.println("(c) 2007 OSGi, All Rights Reserved");
 
@@ -148,7 +153,7 @@ public class Index {
 		}
 	}
 
-	static String getName(ResourceImpl impl) {
+	String getName(ResourceImpl impl) {
 		String s = impl.getSymbolicName();
 		if (s != null)
 			return s;
@@ -157,14 +162,14 @@ public class Index {
 		}
 	}
 
-	static void recurse(Set resources, File path) throws Exception {
+	void recurse(Set resources, File path) throws Exception {
 		if (path.isDirectory()) {
 			String list[] = path.list();
 			for (int i = 0; i < list.length; i++) {
 				recurse(resources, new File(path, list[i]));
 			}
 		} else {
-			if (path.getName().endsWith(".jar")) {
+			if (path.getName().endsWith("ar")) { //ARJUN PATCH.jar")) {
 				BundleInfo info = new BundleInfo(repository, path);
 				ResourceImpl resource = info.build();
 				if (urlTemplate != null) {
@@ -177,7 +182,7 @@ public class Index {
 		}
 	}
 
-	static void doTemplate(File path, ResourceImpl resource)
+	void doTemplate(File path, ResourceImpl resource)
 			throws MalformedURLException {
 		String dir = path.getAbsoluteFile().getParentFile().getAbsoluteFile()
 				.toURL().toString();
@@ -203,7 +208,7 @@ public class Index {
 	 *            The output zip file
 	 * @throws IOException
 	 */
-	static Tag doIndex(Collection resources) throws IOException {
+	Tag doIndex(Collection resources) throws IOException {
 		Tag repository = new Tag("repository");
 		repository.addAttribute("lastmodified", new Date());
 		repository.addAttribute("name", name);
@@ -226,7 +231,7 @@ public class Index {
 	 *            The contents stream
 	 * @throws IOException
 	 */
-	static void addToZip(ZipOutputStream zip, String name, InputStream actual)
+	void addToZip(ZipOutputStream zip, String name, InputStream actual)
 			throws IOException {
 		byte buffer[];
 		buffer = readAll(actual, 0);
@@ -248,7 +253,7 @@ public class Index {
 	 * The method is recursive. It keeps on calling a higher level routine until
 	 * EOF. Only then is the result buffer calculated.
 	 */
-	static byte[] readAll(InputStream in, int offset) throws IOException {
+	byte[] readAll(InputStream in, int offset) throws IOException {
 		byte temp[] = new byte[4096];
 		byte result[];
 		int size = in.read(temp, 0, temp.length);
