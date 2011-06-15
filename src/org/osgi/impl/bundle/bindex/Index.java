@@ -39,6 +39,7 @@ public class Index {
 	URL licenseURL = null;
 	boolean quiet = false;
 	String name = "Untitled";
+	boolean ignoreFlag = false;
 	String urlTemplate = null;
 	URL root;
 	RepositoryImpl repository;
@@ -51,16 +52,16 @@ public class Index {
 	 * @throws Exception
 	 */
 	public static void main(String args[]) throws Exception {
-	  Index index = new Index();
-	  index.run(args);
+		Index index = new Index();
+		index.run(args);
 	}
-	
+
 	protected void run(String args[]) throws Exception {
 		System.err.println("Bundle Indexer | v2.2");
 		System.err.println("(c) 2007 OSGi, All Rights Reserved");
 
-		Set resources = new HashSet();
-		root = new File("").getAbsoluteFile().toURL();
+		Set<ResourceImpl> resources = new HashSet<ResourceImpl>();
+		root = new File("").getAbsoluteFile().toURI().toURL();
 		repository = new RepositoryImpl(root);
 
 		for (int i = 0; i < args.length; i++)
@@ -73,15 +74,17 @@ public class Index {
 					repositoryFileName = args[++i];
 					repository = new RepositoryImpl(
 							new File(repositoryFileName).getAbsoluteFile()
-									.toURL());
+									.toURI().toURL());
 				} else if (args[i].startsWith("-q"))
 					quiet = true;
 				else if (args[i].startsWith("-d")) {
-					root = new File(args[++i]).toURL();
+					root = new File(args[++i]).toURI().toURL();
 				} else if (args[i].startsWith("-t"))
 					urlTemplate = args[++i];
 				else if (args[i].startsWith("-l")) {
-					licenseURL = new URL(new File("").toURL(), args[++i]);
+					licenseURL = new URL(new File("").toURI().toURL(), args[++i]);
+				} else if (args[i].startsWith("-i")) {
+					ignoreFlag = true;
 				} else if (args[i].startsWith("-help")) {
 					System.err
 							.println("bindex " //
@@ -89,6 +92,7 @@ public class Index {
 									+ "[-d rootFile]\n" //
 									+ "[ -r repository.(xml|zip) ]\n" //
 									+ "[-help]\n" //
+									+ "[-ignore] #ignore exceptions when no manifest\n" //
 									+ "[-l file:license.html ]\n" //
 									+ "[-quiet]\n" //
 									+ "[-stylesheet " + stylesheet + "  ]\n" //
@@ -102,9 +106,9 @@ public class Index {
 				e.printStackTrace();
 			}
 
-		List sorted = new ArrayList(resources);
-		Collections.sort(sorted, new Comparator() {
-			public int compare(Object r1, Object r2) {
+		List<ResourceImpl> sorted = new ArrayList<ResourceImpl>(resources);
+		Collections.sort(sorted, new Comparator<ResourceImpl>() {
+			public int compare(ResourceImpl r1, ResourceImpl r2) {
 				String s1 = getName((ResourceImpl) r1);
 				String s2 = getName((ResourceImpl) r2);
 				return s1.compareTo(s2);
@@ -147,7 +151,8 @@ public class Index {
 		if (!quiet) {
 			PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 			pw.println("<?xml version='1.0' encoding='utf-8'?>");
-			pw.println("<?xml-stylesheet type='text/xsl' href='"+stylesheet+"'?>");
+			pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet
+					+ "'?>");
 			tag.print(0, pw);
 			pw.close();
 		}
@@ -162,22 +167,33 @@ public class Index {
 		}
 	}
 
-	void recurse(Set resources, File path) throws Exception {
+	void recurse(Set<ResourceImpl> resources, File path) throws Exception {
 		if (path.isDirectory()) {
 			String list[] = path.list();
 			for (int i = 0; i < list.length; i++) {
 				recurse(resources, new File(path, list[i]));
 			}
 		} else {
-			if (path.getName().endsWith("ar")) { //ARJUN PATCH.jar")) {
-				BundleInfo info = new BundleInfo(repository, path);
-				ResourceImpl resource = info.build();
-				if (urlTemplate != null) {
-					doTemplate(path, resource);
-				} else
-					resource.setURL(path.toURL());
+			if (path.getName().endsWith("ar")) { // ARJUN PATCH.jar")) {
+				BundleInfo info;
+				try {
+					info = new BundleInfo(repository, path);
+					ResourceImpl resource = info.build();
+					if (urlTemplate != null) {
+						doTemplate(path, resource);
+					} else
+						resource.setURL(path.toURI().toURL());
 
-				resources.add(resource);
+					resources.add(resource);
+				} catch (Exception e) {
+					if (ignoreFlag == false) {
+						throw e;
+					} else {
+						System.err.println("Ignoring: " + path.getName()
+								+ " with exception " + e.getMessage());
+					}
+
+				}
 			}
 		}
 	}
@@ -185,7 +201,7 @@ public class Index {
 	void doTemplate(File path, ResourceImpl resource)
 			throws MalformedURLException {
 		String dir = path.getAbsoluteFile().getParentFile().getAbsoluteFile()
-				.toURL().toString();
+				.toURI().toURL().toString();
 		if (dir.endsWith("/"))
 			dir = dir.substring(0, dir.length() - 1);
 
@@ -208,13 +224,13 @@ public class Index {
 	 *            The output zip file
 	 * @throws IOException
 	 */
-	Tag doIndex(Collection resources) throws IOException {
+	Tag doIndex(Collection<ResourceImpl> resources) throws IOException {
 		Tag repository = new Tag("repository");
 		repository.addAttribute("lastmodified", new Date());
 		repository.addAttribute("name", name);
 
-		for (Iterator i = resources.iterator(); i.hasNext();) {
-			ResourceImpl resource = (ResourceImpl) i.next();
+		for (Iterator<ResourceImpl> i = resources.iterator(); i.hasNext();) {
+			ResourceImpl resource = i.next();
 			repository.addContent(resource.toXML());
 		}
 		return repository;

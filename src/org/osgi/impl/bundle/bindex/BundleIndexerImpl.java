@@ -34,49 +34,57 @@ import aQute.bnd.annotation.component.*;
  */
 @Component
 public class BundleIndexerImpl extends Index implements BundleIndexer {
-  OutputStream out;
+	OutputStream out;
 
-  public synchronized void index(Set<File> jarFiles, OutputStream out, Map<String, String> config) throws Exception 
-  {
-    if (jarFiles == null || jarFiles.isEmpty())
-      throw new IllegalArgumentException("No input jar provided");
-    if (out == null) throw new IllegalArgumentException("No output stream provided");
-    this.out = out;
+	public synchronized void index(Set<File> jarFiles, OutputStream out,
+			Map<String, String> config) throws Exception {
+		if (jarFiles == null || jarFiles.isEmpty())
+			throw new IllegalArgumentException("No input jar provided");
+		if (out == null)
+			throw new IllegalArgumentException("No output stream provided");
+		this.out = out;
 
-    if (config != null) 
-    {
-      String v = null;
-      if ((v = config.get(REPOSITORY_NAME)) != null) super.name = v;
-      if ((v = config.get(STYLESHEET)) != null) super.stylesheet = v;
-      if ((v = config.get(URL_TEMPLATE)) != null) super.urlTemplate = v;
-      if ((v = config.get(ROOT_URL)) != null) super.root = new URL(v);
-      if ((v = config.get(LICENSE_URL)) != null) super.licenseURL = new URL(v);
-    }
+		if (config != null) {
+			String v = null;
+			if ((v = config.get(REPOSITORY_NAME)) != null)
+				super.name = v;
+			if ((v = config.get(STYLESHEET)) != null)
+				super.stylesheet = v;
+			if ((v = config.get(URL_TEMPLATE)) != null)
+				super.urlTemplate = v;
+			if ((v = config.get(ROOT_URL)) != null)
+				super.root = new URL(v);
+			if ((v = config.get(LICENSE_URL)) != null)
+				super.licenseURL = new URL(v);
+		}
 
-    if (super.root == null) super.root = new File("").getAbsoluteFile().toURL();
-    super.repository = new RepositoryImpl(super.root);
+		if (super.root == null)
+			super.root = new File("").getAbsoluteFile().toURI().toURL();
+		super.repository = new RepositoryImpl(super.root);
 
-    Set resources = new HashSet();
-    for (File f : jarFiles) super.recurse(resources, f);
+		Set<ResourceImpl> resources = new HashSet<ResourceImpl>();
+		for (File f : jarFiles)
+			super.recurse(resources, f);
 
-    List sorted = new ArrayList(resources);
-    Collections.sort(sorted, new Comparator() {
-      public int compare(Object r1, Object r2) {
-	String s1 = getName((ResourceImpl) r1);
-	String s2 = getName((ResourceImpl) r2);
-	return s1.compareTo(s2);
-      }
-    });
+		List<ResourceImpl> sorted = new ArrayList<ResourceImpl>(resources);
+		Collections.sort(sorted, new Comparator<ResourceImpl>() {
+			public int compare(ResourceImpl r1, ResourceImpl r2) {
+				String s1 = getName((ResourceImpl) r1);
+				String s2 = getName((ResourceImpl) r2);
+				return s1.compareTo(s2);
+			}
+		});
 
-    Tag tag = super.doIndex(sorted);
-    PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
+		Tag tag = super.doIndex(sorted);
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
 
-    try {
-      pw.println("<?xml version='1.0' encoding='utf-8'?>");
-      pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet + "'?>");
-      tag.print(0, pw);
-    } finally {
-      pw.close();
-    }
-  }
+		try {
+			pw.println("<?xml version='1.0' encoding='utf-8'?>");
+			pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet
+					+ "'?>");
+			tag.print(0, pw);
+		} finally {
+			pw.close();
+		}
+	}
 }
