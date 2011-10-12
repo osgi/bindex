@@ -30,8 +30,8 @@ import java.util.*;
 public class Tag {
 	Tag						parent;
 	String					name;
-	Map						attributes	= new TreeMap();
-	Vector					content		= new Vector();
+	Map<String, String>		attributes	= new TreeMap<String, String>();
+	Vector<Object>			content		= new Vector<Object>();
 
 	static SimpleDateFormat	format		= new SimpleDateFormat(
 												"yyyyMMddHHmmss.SSS");
@@ -46,7 +46,7 @@ public class Tag {
 	/**
 	 * Construct a new Tag with a name.
 	 */
-	public Tag(String name, Map attributes) {
+	public Tag(String name, Map<String, String> attributes) {
 		this.name = name;
 		this.attributes = attributes;
 	}
@@ -126,7 +126,7 @@ public class Tag {
 	 * Return the attribute value.
 	 */
 	public String getAttribute(String key) {
-		return (String) attributes.get(key);
+		return attributes.get(key);
 	}
 
 	/**
@@ -140,14 +140,14 @@ public class Tag {
 	/**
 	 * Answer the attributes as a Dictionary object.
 	 */
-	public Map getAttributes() {
+	public Map<String, String> getAttributes() {
 		return attributes;
 	}
 
 	/**
 	 * Return the contents.
 	 */
-	public Vector getContents() {
+	public Vector<Object> getContents() {
 		return content;
 	}
 
@@ -165,10 +165,9 @@ public class Tag {
 	 * Return only the tags of the first level of descendants that match the
 	 * name.
 	 */
-	public Vector getContents(String tag) {
-		Vector out = new Vector();
-		for (Enumeration e = content.elements(); e.hasMoreElements();) {
-			Object o = e.nextElement();
+	public Vector<Object> getContents(String tag) {
+		Vector<Object> out = new Vector<Object>();
+		for (Object o : content) {
 			if (o instanceof Tag && ((Tag) o).getName().equals(tag))
 				out.addElement(o);
 		}
@@ -188,8 +187,7 @@ public class Tag {
 	 * convenient method to get the contents in a StringBuffer.
 	 */
 	public void getContentsAsString(StringBuffer sb) {
-		for (Enumeration e = content.elements(); e.hasMoreElements();) {
-			Object o = e.nextElement();
+		for (Object o : content) {
 			if (o instanceof Tag)
 				((Tag) o).getContentsAsString(sb);
 			else
@@ -206,9 +204,9 @@ public class Tag {
 		pw.print('<');
 		pw.print(name);
 
-		for (Iterator e = attributes.keySet().iterator(); e.hasNext();) {
-			String key = (String) e.next();
-			String value = escape((String) attributes.get(key));
+		for (Map.Entry<String, String> e : attributes.entrySet()) {
+			String key = e.getKey();
+			String value = escape(e.getValue());
 			pw.print(' ');
 			pw.print(key);
 			pw.print("=");
@@ -224,8 +222,7 @@ public class Tag {
 			pw.print('/');
 		else {
 			pw.print('>');
-			for (Enumeration e = content.elements(); e.hasMoreElements();) {
-				Object content = e.nextElement();
+			for (Object content : this.content) {
 				if (content instanceof String) {
 					formatted(pw, indent + 2, 60, escape((String) content));
 				}
@@ -323,20 +320,19 @@ public class Tag {
 	}
 
 	public Tag[] select(String path, Tag mapping) {
-		Vector v = new Vector();
+		Vector<Object> v = new Vector<Object>();
 		select(path, v, mapping);
 		Tag[] result = new Tag[v.size()];
 		v.copyInto(result);
 		return result;
 	}
 
-	void select(String path, Vector results, Tag mapping) {
+	void select(String path, Vector<Object> results, Tag mapping) {
 		if (path.startsWith("//")) {
 			int i = path.indexOf('/', 2);
 			String name = path.substring(2, i < 0 ? path.length() : i);
 
-			for (Enumeration e = content.elements(); e.hasMoreElements();) {
-				Object o = e.nextElement();
+			for (Object o : content) {
 				if (o instanceof Tag) {
 					Tag child = (Tag) o;
 					if (match(name, child, mapping))
@@ -361,8 +357,7 @@ public class Tag {
 			remainder = path.substring(i + 1);
 		}
 
-		for (Enumeration e = content.elements(); e.hasMoreElements();) {
-			Object o = e.nextElement();
+		for (Object o : content) {
 			if (o instanceof Tag) {
 				Tag child = (Tag) o;
 				if (child.getName().equals(elementName)
@@ -434,8 +429,7 @@ public class Tag {
 
 	public String getStringContent() {
 		StringBuffer sb = new StringBuffer();
-		for (Enumeration e = content.elements(); e.hasMoreElements();) {
-			Object c = e.nextElement();
+		for (Object c : content) {
 			if (!(c instanceof Tag))
 				sb.append(c);
 		}
@@ -478,9 +472,8 @@ public class Tag {
 	}
 
 
-	public static void convert( Collection c, String type, Tag parent ) {
-		for ( Iterator i=c.iterator(); i.hasNext(); ) {
-			Map	map = (Map) i.next();
+	public static void convert( Collection<Map<String, String>> c, String type, Tag parent ) {
+		for (Map<String, String> map : c) {
 			parent.addContent( new Tag(type, map) );
 		}
 	}
