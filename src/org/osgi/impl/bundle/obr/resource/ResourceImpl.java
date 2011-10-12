@@ -26,16 +26,16 @@ import org.osgi.service.obr.*;
 import org.xmlpull.v1.XmlPullParser;
 
 public class ResourceImpl implements Resource {
-	List			capabilities	= new ArrayList();
-	List			requirements	= new ArrayList();
+	List<Capability> capabilities	= new ArrayList<Capability>();
+	List<Requirement> requirements	= new ArrayList<Requirement>();
 	URL				url;
 	String			symbolicName;
 	VersionRange		version;
-	List			categories		= new ArrayList();
+	List<String>	categories		= new ArrayList<String>();
 	long			size			= -1;
 	String			id;
 	static int		ID				= 1;
-	Map				map				= new HashMap();
+	Map<String, Object>	map				= new HashMap<String, Object>();
 	RepositoryImpl	repository;
 	String			presentationName;
 	File			file;
@@ -104,19 +104,19 @@ public class ResourceImpl implements Resource {
 		categories.add(category);
 	}
 
-	public void addCapability(CapabilityImpl capability) {
+	public void addCapability(Capability capability) {
 		if (capability != null)
 			capabilities.add(capability);
 	}
 
-	public void addRequirement(RequirementImpl requirement) {
+	public void addRequirement(Requirement requirement) {
 		if (requirement != null)
 			requirements.add(requirement);
 	}
 
 	public void setLicense(URL license) {
 		if (license != null)
-			map.put(LICENSE_URL, license);
+			map.put(LICENSE_URL, license.toString());
 	}
 
 	public String getDescription() {
@@ -170,7 +170,8 @@ public class ResourceImpl implements Resource {
 							.getPresentationName());
 		meta.addAttribute(VERSION, resource.getVersion().toString());
 		meta.addAttribute("id", resource.getId());
-		Map map = new TreeMap(resource.getProperties());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> map = new TreeMap<String, Object>(resource.getProperties());
 		for (int i = 0; i < Resource.KEYS.length; i++) {
 			String key = KEYS[i];
 			if (!(key.equals(URL) || key.equals(SYMBOLIC_NAME) || key
@@ -272,8 +273,7 @@ public class ResourceImpl implements Resource {
 	}
 
 	public boolean satisfies(RequirementImpl requirement) {
-		for (Iterator i = capabilities.iterator(); i.hasNext();) {
-			CapabilityImpl capability = (CapabilityImpl) i.next();
+		for (Capability capability : capabilities) {
 			if (requirement.isSatisfied(capability))
 				return true;
 		}
@@ -293,11 +293,11 @@ public class ResourceImpl implements Resource {
 		map.put(SIZE, new Long(size));
 	}
 
-	public Collection getRequirementList() {
+	public Collection<Requirement> getRequirementList() {
 		return requirements;
 	}
 
-	public Collection getCapabilityList() {
+	public Collection<Capability> getCapabilityList() {
 		return capabilities;
 	}
 
@@ -320,7 +320,7 @@ public class ResourceImpl implements Resource {
 		return (String[]) categories.toArray(new String[categories.size()]);
 	}
 
-	public Map getProperties() {
+	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(map);
 	}
 
@@ -356,10 +356,9 @@ public class ResourceImpl implements Resource {
 		file = zipFile;
 	}
 
-	public Set getExtendList() {
-		Set set = new HashSet();
-		for (Iterator i = requirements.iterator(); i.hasNext();) {
-			RequirementImpl	impl = (RequirementImpl) i.next();
+	public Set<Requirement> getExtendList() {
+		Set<Requirement> set = new HashSet<Requirement>();
+		for (Requirement impl : requirements) {
 			if ( impl.isExtend())
 				set.add(impl);
 		}

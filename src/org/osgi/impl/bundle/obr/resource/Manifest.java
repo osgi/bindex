@@ -21,22 +21,22 @@ import java.io.*;
 import java.util.*;
 
 
-public class Manifest extends Hashtable {
+public class Manifest extends Hashtable<Object, Object> {
 	static final long	serialVersionUID	= 1L;
-	List				imports;
-	List				exports;
+	List<ManifestEntry>	imports;
+	List<ManifestEntry>	exports;
 	ManifestEntry		name;
 	String				activator;
 	String				classpath[]	= new String[] {"."};
 	int					section;
 	String				location;
 	Native				_native[];
-	Vector				duplicates	= new Vector();
+	Vector<String>		duplicates	= new Vector<String>();
 	final static String	wordparts	= "~!@#$%^&*_/?><.-+";
 	ManifestEntry		bsn;
 	VersionRange			version;
 	ManifestEntry		host;
-	List				require;
+	List<ManifestEntry>	require;
 
 	public Manifest(InputStream in) throws IOException {
 		parse(new InputStreamReader(in, "UTF8"));
@@ -192,9 +192,9 @@ public class Manifest extends Hashtable {
 		return parameter;
 	}
 
-	public List getEntries(String line) throws IOException {
-		List v = new Vector();
-		Set aliases = new HashSet();
+	public List<ManifestEntry> getEntries(String line) throws IOException {
+		List<ManifestEntry> v = new Vector<ManifestEntry>();
+		Set<String> aliases = new HashSet<String>();
 
 		StreamTokenizer st = getStreamTokenizer(line);
 		do {
@@ -215,19 +215,19 @@ public class Manifest extends Hashtable {
 				}
 			}
 			v.add(p);
-			for (Iterator a = aliases.iterator(); a.hasNext();) {
-				v.add(p.getAlias((String) a.next()));
+			for (String s : aliases) {
+				v.add(p.getAlias(s));
 			}
 		} while (st.ttype == ',');
 		return v;
 	}
 
 	Native[] getNative(String line) throws IOException {
-		Vector v = new Vector();
+		Vector<Native> v = new Vector<Native>();
 		StreamTokenizer st = getStreamTokenizer(line);
 		do {
 			Native spec = new Native();
-			Vector names = new Vector();
+			Vector<String> names = new Vector<String>();
 			do {
 				Parameter parameter = getParameter(st);
 				if (parameter.value == null)
@@ -262,11 +262,11 @@ public class Manifest extends Hashtable {
 		return result;
 	}
 
-	public List getImports() {
+	public List<ManifestEntry> getImports() {
 		return imports;
 	}
 
-	public List getExports() {
+	public List<ManifestEntry> getExports() {
 		return exports;
 	}
 
@@ -368,11 +368,11 @@ public class Manifest extends Hashtable {
 		this.bsn = bsn;
 	}
 
-	public Vector getDuplicates() {
+	public Vector<String> getDuplicates() {
 		return duplicates;
 	}
 
-	public void setDuplicates(Vector duplicates) {
+	public void setDuplicates(Vector<String> duplicates) {
 		this.duplicates = duplicates;
 	}
 
@@ -384,7 +384,7 @@ public class Manifest extends Hashtable {
 		this.host = host;
 	}
 
-	public List getRequire() {
+	public List<ManifestEntry> getRequire() {
 		return require;
 	}
 
