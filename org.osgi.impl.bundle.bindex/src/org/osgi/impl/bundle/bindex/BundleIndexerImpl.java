@@ -19,7 +19,6 @@
 package org.osgi.impl.bundle.bindex;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 import org.osgi.impl.bundle.obr.resource.*;
@@ -28,12 +27,18 @@ import org.osgi.service.bindex.*;
 import aQute.bnd.annotation.component.*;
 
 /**
- * BundleIndexer implementation based on Index
+ * BundleIndexer implementation based on Indexer
  * 
  * @version $Revision$
  */
 @Component
-public class BundleIndexerImpl extends Index implements BundleIndexer {
+public class BundleIndexerImpl extends Indexer implements BundleIndexer {
+
+	public BundleIndexerImpl() {
+		super();
+		setRepositoryFile(new File("repository.xml"));
+	}
+
 	OutputStream out;
 
 	public synchronized void index(Set<File> jarFiles, OutputStream out,
@@ -47,20 +52,20 @@ public class BundleIndexerImpl extends Index implements BundleIndexer {
 		if (config != null) {
 			String v = null;
 			if ((v = config.get(REPOSITORY_NAME)) != null)
-				super.name = v;
+				setName(v);
 			if ((v = config.get(STYLESHEET)) != null)
-				super.stylesheet = v;
+				setStylesheet(v);
 			if ((v = config.get(URL_TEMPLATE)) != null)
-				super.urlTemplate = v;
+				setUrlTemplate(v);
 			if ((v = config.get(ROOT_URL)) != null)
-				super.root = new URL(v);
+				setRootURL(v);
 			if ((v = config.get(LICENSE_URL)) != null)
-				super.licenseURL = new URL(v);
+				setLicenseURL(v);
 		}
 
-		if (super.root == null)
-			super.root = new File("").getAbsoluteFile().toURI().toURL();
-		super.repository = new RepositoryImpl(super.root);
+		if (getRoot() == null)
+			setRootURL(new File("").getAbsoluteFile().toURI().toURL());
+		setRepository(new RepositoryImpl(getRoot()));
 
 		Set<ResourceImpl> resources = new HashSet<ResourceImpl>();
 		for (File f : jarFiles)
@@ -80,8 +85,7 @@ public class BundleIndexerImpl extends Index implements BundleIndexer {
 
 		try {
 			pw.println("<?xml version='1.0' encoding='utf-8'?>");
-			pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet
-					+ "'?>");
+			pw.println("<?xml-stylesheet type='text/xsl' href='" + getStylesheet() + "'?>");
 			tag.print(0, pw);
 		} finally {
 			pw.close();
