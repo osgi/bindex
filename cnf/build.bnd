@@ -3,3 +3,7 @@
 # Default settings are in ext/*.bnd and they will be overridden by anything
 # you specify in this file.
 -sources:       false
+
+# we use git
+Git-Descriptor: ${system;git describe --dirty --always}
+
