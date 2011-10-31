@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +16,10 @@
 
 package org.osgi.impl.bundle.obr.resource;
 
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.osgi.framework.*;
+import org.osgi.framework.Version;
 
 public class VersionRange implements Comparable<VersionRange> {
 	Version high;
@@ -29,8 +28,8 @@ public class VersionRange implements Comparable<VersionRange> {
 	char end = ']';
 
 	static String V = "[0-9]+(\\.[0-9]+(\\.[0-9]+(\\.[a-zA-Z0-9_-]+)?)?)?";
-	static Pattern RANGE = Pattern.compile("(\\(|\\[)\\s*(" + V + ")\\s*,\\s*(" + V
-			+ ")\\s*(\\)|\\])");
+	static Pattern RANGE = Pattern.compile("(\\(|\\[)\\s*(" + V + ")\\s*,\\s*("
+			+ V + ")\\s*(\\)|\\])");
 
 	public VersionRange(String string) {
 		string = string.trim();
@@ -75,7 +74,7 @@ public class VersionRange implements Comparable<VersionRange> {
 	}
 
 	public boolean equals(VersionRange other) {
-		return compareTo(other)==0;
+		return compareTo(other) == 0;
 	}
 
 	public int hashCode() {
@@ -88,7 +87,7 @@ public class VersionRange implements Comparable<VersionRange> {
 			a = range;
 			b = this;
 		} else {
-			if ( !isRange() )
+			if (!isRange())
 				return low.compareTo(range.high);
 		}
 		int l = a.low.compareTo(b.low);

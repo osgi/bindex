@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +15,20 @@
  */
 package org.osgi.impl.bundle.obr.resource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.*;
-import java.util.zip.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.osgi.service.obr.Capability;
 import org.osgi.service.obr.Requirement;
@@ -29,8 +37,6 @@ import org.osgi.service.obr.Resource;
 /**
  * Convert a bundle to a generic resource description and store its local
  * dependencies (like for example a license file in the JAR) in a zip file.
- * 
- * @version $Revision$
  */
 public class BundleInfo {
 	Manifest manifest;
@@ -74,7 +80,7 @@ public class BundleInfo {
 	 * could be local.
 	 * 
 	 * @return the resource
-	 * @throws Exception
+	 * @throws Exception in case of an error
 	 */
 	public ResourceImpl build() throws Exception {
 		ResourceImpl resource;
@@ -86,7 +92,8 @@ public class BundleInfo {
 		try {
 
 			// Calculate the location URL of the JAR
-			URL location = new URL("jar:" + bundleJar.toURI().toURL().toString() + "!/");
+			URL location = new URL("jar:"
+					+ bundleJar.toURI().toURL().toString() + "!/");
 			resource.setURL(bundleJar.toURI().toURL());
 			resource.setFile(bundleJar);
 
@@ -115,7 +122,7 @@ public class BundleInfo {
 	/**
 	 * Check the size and add it.
 	 * 
-	 * @param resource
+	 * @param resource the resource to get the size from
 	 */
 	void doSize(ResourceImpl resource) {
 		long size = bundleJar.length();
@@ -126,7 +133,7 @@ public class BundleInfo {
 	/**
 	 * Find the categories, break them up and add them.
 	 * 
-	 * @param resource
+	 * @param resource the resource to get the categories from
 	 */
 	void doCategories(ResourceImpl resource) {
 		for (int i = 0; i < manifest.getCategories().length; i++) {
@@ -355,8 +362,8 @@ public class BundleInfo {
 		appendVersion(filter, pack.getVersion());
 		Map<String, String> attributes = pack.getAttributes();
 		Set<String> attrs = doImportPackageAttributes(req, filter, attributes);
-		
-		// The next code is using the subset operator 
+
+		// The next code is using the subset operator
 		// to check mandatory attributes, it seems to be
 		// impossible to rewrite. It must assert that whateber
 		// is in mandatory: must be in any of the attributes.
@@ -383,21 +390,19 @@ public class BundleInfo {
 					filter.append(">=");
 					filter.append(version.low);
 					filter.append(")");
-				}
-				else {
+				} else {
 					filter.append("(!(version");
 					filter.append("<=");
 					filter.append(version.low);
 					filter.append("))");
 				}
 
-				if ( version.includeHigh() ) {
+				if (version.includeHigh()) {
 					filter.append("(version");
 					filter.append("<=");
 					filter.append(version.high);
-					filter.append(")");					
-				}
-				else {
+					filter.append(")");
+				} else {
 					filter.append("(!(version");
 					filter.append(">=");
 					filter.append(version.high);
@@ -411,8 +416,8 @@ public class BundleInfo {
 		}
 	}
 
-	Set<String> doImportPackageAttributes(RequirementImpl req, StringBuffer filter,
-			Map<String, String> attributes) {
+	Set<String> doImportPackageAttributes(RequirementImpl req,
+			StringBuffer filter, Map<String, String> attributes) {
 		HashSet<String> set = new HashSet<String>();
 
 		if (attributes != null)

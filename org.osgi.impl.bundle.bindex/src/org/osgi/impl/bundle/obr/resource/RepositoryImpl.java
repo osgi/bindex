@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,31 +16,37 @@
 
 package org.osgi.impl.bundle.obr.resource;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.zip.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.kxml2.io.KXmlParser;
-import org.osgi.service.obr.*;
-import org.xmlpull.v1.*;
+import org.osgi.service.obr.Repository;
+import org.osgi.service.obr.Resource;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Implements the basic repository. A repository holds a set of resources.
- * 
- * 
- * @version $Revision$
  */
 public class RepositoryImpl implements Repository {
-	transient Set<Resource>	resources		= new HashSet<Resource>();
-	URL						url;
-	String					date;
-	Set<URL>				visited			= new HashSet<URL>();
-	final static Resource[]	EMPTY_RESOURCE	= new Resource[0];
-	String					name			= "Untitled";
-	long					lastModified;
-	Exception				exception;
-	int						ranking=0;
+	transient Set<Resource> resources = new HashSet<Resource>();
+	URL url;
+	String date;
+	Set<URL> visited = new HashSet<URL>();
+	final static Resource[] EMPTY_RESOURCE = new Resource[0];
+	String name = "Untitled";
+	long lastModified;
+	Exception exception;
+	int ranking = 0;
 
 	/**
 	 * Each repository is identified by a single URL.
@@ -50,7 +54,7 @@ public class RepositoryImpl implements Repository {
 	 * A repository can hold referrals to other repositories. These referred
 	 * repositories are included at the point of referall.
 	 * 
-	 * @param url
+	 * @param url the root directory URL
 	 */
 	public RepositoryImpl(URL url) {
 		this.url = url;
@@ -58,8 +62,6 @@ public class RepositoryImpl implements Repository {
 
 	/**
 	 * Refresh the repository from the URL.
-	 * 
-	 * @throws Exception
 	 */
 	public boolean refresh() {
 		exception = null;
@@ -68,8 +70,7 @@ public class RepositoryImpl implements Repository {
 			parseDocument(url);
 			visited = null;
 			return true;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			exception = e;
 		}
@@ -78,9 +79,6 @@ public class RepositoryImpl implements Repository {
 
 	/**
 	 * Parse the repository.
-	 * 
-	 * @param parser
-	 * @throws Exception
 	 */
 	private void parseRepository(XmlPullParser parser) throws Exception {
 		try {
@@ -99,8 +97,7 @@ public class RepositoryImpl implements Repository {
 					if (parser.getName().equals("resource")) {
 						Resource resource = new ResourceImpl(this, parser);
 						resources.add(resource);
-					}
-					else if (parser.getName().equals("referral"))
+					} else if (parser.getName().equals("referral"))
 						referral(parser);
 					else
 						throw new IllegalArgumentException(
@@ -109,8 +106,7 @@ public class RepositoryImpl implements Repository {
 				}
 				parser.require(XmlPullParser.END_TAG, null, "repository");
 			}
-		}
-		catch (XmlPullParserException e) {
+		} catch (XmlPullParserException e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException("XML unregognized around: "
 					+ e.getLineNumber() + " " + e.getMessage());
@@ -121,17 +117,17 @@ public class RepositoryImpl implements Repository {
 	 * Parse an old style OBR repository.
 	 * 
 	 * <dtd-version>1.0</dtd-version> <repository> <name>Oscar Bundle
-	 * Repository</name> <url>http://oscar-osgi.sourceforge.net/</url>
-	 * <date>Fri May 07 16:45:07 CEST 2004</date> <extern-repositories> <!--
-	 * Stefano Lenzi (kismet@interfree.it) -->
+	 * Repository</name> <url>http://oscar-osgi.sourceforge.net/</url> <date>Fri
+	 * May 07 16:45:07 CEST 2004</date> <extern-repositories> <!-- Stefano Lenzi
+	 * (kismet@interfree.it) -->
 	 * <url>http://domoware.isti.cnr.it/osgi-obr/niche-osgi-obr.xml</url>
 	 * <!--Manuel Palencia (santillan@dit.upm.es) --> <!--
 	 * <url>http://jmood.forge.os4os.org/repository.xml</url> --> <!-- Enrique
 	 * Rodriguez (erodriguez@apache.org) -->
 	 * <url>http://update.cainenable.org/repository.xml</url>
 	 * </extern-repositories> </repository> <bundle> <bundle-name>Bundle
-	 * Repository</bundle-name> <bundle-description> A bundle repository
-	 * service for Oscar. </bundle-description> <bundle-updatelocation>
+	 * Repository</bundle-name> <bundle-description> A bundle repository service
+	 * for Oscar. </bundle-description> <bundle-updatelocation>
 	 * http://oscar-osgi.sf.net/repo/bundlerepository/bundlerepository.jar
 	 * </bundle-updatelocation> <bundle-sourceurl>
 	 * http://oscar-osgi.sf.net/repo/bundlerepository/bundlerepository-src.jar
@@ -162,10 +158,10 @@ public class RepositoryImpl implements Repository {
 					if (key.equals("import-package")) {
 						RequirementImpl requirement = new RequirementImpl(
 								"package");
-						
+
 						requirement.setOptional(false);
 						requirement.setMultiple(false);
-						
+
 						String p = parser.getAttributeValue(null, "package");
 						StringBuffer sb = new StringBuffer();
 						sb.append("(&(package=");
@@ -176,21 +172,21 @@ public class RepositoryImpl implements Repository {
 						VersionRange v = new VersionRange("0");
 						if (version != null) {
 							sb.append("(version=");
-							sb.append(v= new VersionRange(version));
+							sb.append(v = new VersionRange(version));
 							sb.append(")");
 						}
 						sb.append(")");
 						requirement.setFilter(sb.toString());
-						requirement.setComment("Import-Package: " + p + ";" + v );
+						requirement
+								.setComment("Import-Package: " + p + ";" + v);
 						resource.addRequirement(requirement);
-						
+
 						parser.nextTag();
-					}
-					else if (key.equals("export-package")) {
+					} else if (key.equals("export-package")) {
 						CapabilityImpl capability = new CapabilityImpl(
 								"package");
-						capability.addProperty("package", parser
-								.getAttributeValue(null, "package"));
+						capability.addProperty("package",
+								parser.getAttributeValue(null, "package"));
 						String version = parser.getAttributeValue(null,
 								"specification-version");
 						if (version != null) {
@@ -199,8 +195,7 @@ public class RepositoryImpl implements Repository {
 						}
 						resource.addCapability(capability);
 						parser.nextTag();
-					}
-					else {
+					} else {
 						String value = parser.nextText().trim();
 						if (key.equals("bundle-sourceurl"))
 							resource.setSource(new URL(value));
@@ -215,8 +210,7 @@ public class RepositoryImpl implements Repository {
 						else if (key.equals("bundle-name")) {
 							resource.setName(value);
 							resource.setPresentationName(value);
-						}
-						else if (key.equals("bundle-version"))
+						} else if (key.equals("bundle-version"))
 							resource.setVersion(new VersionRange(value));
 						else {
 							resource.put(key, value);
@@ -225,8 +219,7 @@ public class RepositoryImpl implements Repository {
 				}
 				resources.add(resource);
 				parser.require(XmlPullParser.END_TAG, null, "bundle");
-			}
-			else if (parser.getName().equals("repository")) {
+			} else if (parser.getName().equals("repository")) {
 				parser.require(XmlPullParser.START_TAG, null, "repository");
 				while (parser.nextTag() == XmlPullParser.START_TAG) {
 					String tag = parser.getName();
@@ -234,8 +227,7 @@ public class RepositoryImpl implements Repository {
 						String name = parser.nextText();
 						if (this.name == null)
 							this.name = name.trim();
-					}
-					else if (tag.equals("url"))
+					} else if (tag.equals("url"))
 						parser.nextText().trim();
 					else if (tag.equals("date"))
 						parser.nextText().trim();
@@ -252,18 +244,15 @@ public class RepositoryImpl implements Repository {
 						}
 						parser.require(XmlPullParser.END_TAG, null,
 								"extern-repositories");
-					}
-					else
+					} else
 						throw new IllegalArgumentException(
 								"Invalid tag in repository: " + url + " "
 										+ parser.getName());
 				}
 				parser.require(XmlPullParser.END_TAG, null, "repository");
-			}
-			else if (parser.getName().equals("dtd-version")) {
+			} else if (parser.getName().equals("dtd-version")) {
 				parser.nextText();
-			}
-			else
+			} else
 				throw new IllegalArgumentException(
 						"Invalid tag in repository: " + url + " "
 								+ parser.getName());
@@ -274,8 +263,6 @@ public class RepositoryImpl implements Repository {
 	/**
 	 * We have a referral to another repository. Just create another parser and
 	 * read it inline.
-	 * 
-	 * @param parser
 	 */
 	void referral(XmlPullParser parser) {
 		// TODO handle depth!
@@ -287,19 +274,13 @@ public class RepositoryImpl implements Repository {
 			parseDocument(url);
 			parser.next();
 			parser.require(XmlPullParser.END_TAG, null, "referral");
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Parse a repository document.
-	 * 
-	 * @param url
-	 * @throws IOException
-	 * @throws XmlPullParserException
-	 * @throws Exception
 	 */
 	void parseDocument(URL url) throws IOException, XmlPullParserException,
 			Exception {
@@ -308,12 +289,12 @@ public class RepositoryImpl implements Repository {
 			try {
 				System.out.println("Visiting: " + url);
 				InputStream in = null;
-				
-				if ( url.getPath().endsWith(".zip")) {
-					ZipInputStream zin = new ZipInputStream( url.openStream() );
+
+				if (url.getPath().endsWith(".zip")) {
+					ZipInputStream zin = new ZipInputStream(url.openStream());
 					ZipEntry entry = zin.getNextEntry();
-					while ( entry != null ) {
-						if ( entry.getName().equals("repository.xml")) {
+					while (entry != null) {
+						if (entry.getName().equals("repository.xml")) {
 							in = zin;
 							break;
 						}
@@ -326,7 +307,7 @@ public class RepositoryImpl implements Repository {
 				XmlPullParser parser = new KXmlParser();
 				parser.setInput(reader);
 				parseRepository(parser);
-			} catch( MalformedURLException e ) {
+			} catch (MalformedURLException e) {
 				System.out.println("Cannot create connection to url");
 			}
 		}
@@ -336,9 +317,6 @@ public class RepositoryImpl implements Repository {
 		return url;
 	}
 
-	/**
-	 * @return
-	 */
 	public Collection<Resource> getResourceList() {
 		return resources;
 	}

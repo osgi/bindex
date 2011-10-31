@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,32 +17,42 @@ package org.osgi.impl.bundle.obr.resource;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.osgi.framework.Version;
-import org.osgi.service.obr.*;
+import org.osgi.service.obr.Capability;
+import org.osgi.service.obr.Repository;
+import org.osgi.service.obr.Requirement;
+import org.osgi.service.obr.Resource;
 import org.xmlpull.v1.XmlPullParser;
 
 public class ResourceImpl implements Resource {
-	List<Capability> capabilities	= new ArrayList<Capability>();
-	List<Requirement> requirements	= new ArrayList<Requirement>();
-	URL				url;
-	String			symbolicName;
-	VersionRange		version;
-	List<String>	categories		= new ArrayList<String>();
-	long			size			= -1;
-	String			id;
-	static int		ID				= 1;
-	Map<String, Object>	map				= new HashMap<String, Object>();
-	RepositoryImpl	repository;
-	String			presentationName;
-	File			file;
-
+	List<Capability> capabilities = new ArrayList<Capability>();
+	List<Requirement> requirements = new ArrayList<Requirement>();
+	URL url;
+	String symbolicName;
+	VersionRange version;
+	List<String> categories = new ArrayList<String>();
+	long size = -1;
+	String id;
+	static int ID = 1;
+	Map<String, Object> map = new HashMap<String, Object>();
+	RepositoryImpl repository;
+	String presentationName;
+	File file;
 
 	public ResourceImpl(RepositoryImpl repository, String name,
 			VersionRange version) {
 		this.version = version;
-		if ( version == null)
+		if (version == null)
 			this.version = new VersionRange("0");
 		this.symbolicName = name;
 		this.repository = repository;
@@ -74,8 +82,7 @@ public class ResourceImpl implements Resource {
 		while (parser.nextTag() == XmlPullParser.START_TAG) {
 			if (parser.getName().equals("category")) {
 				categories.add(parser.getAttributeValue(null, "id").trim());
-			}
-			else if (parser.getName().equals("require"))
+			} else if (parser.getName().equals("require"))
 				addRequirement(new RequirementImpl(parser));
 			else if (parser.getName().equals("capability"))
 				addCapability(new CapabilityImpl(parser));
@@ -147,39 +154,39 @@ public class ResourceImpl implements Resource {
 	}
 
 	public Tag toXML() {
-		return toXML(this );
+		return toXML(this);
 	}
 
 	public static Tag toXML(Resource resource) {
-		return toXML(resource,true);
+		return toXML(resource, true);
 	}
 
-	public static Tag toXML(Resource resource, boolean relative ) {
+	public static Tag toXML(Resource resource, boolean relative) {
 		Tag meta = new Tag("resource");
 		URL url = resource.getURL();
 		String urlString = url.toExternalForm();
-		
-		if ( relative )
+
+		if (relative)
 			urlString = makeRelative(resource.getRepository().getURL(), url);
-		
-		meta.addAttribute("uri", urlString );
+
+		meta.addAttribute("uri", urlString);
 		meta.addAttribute(SYMBOLIC_NAME, resource.getSymbolicName());
 		if (resource.getPresentationName() != null)
-			meta
-					.addAttribute(PRESENTATION_NAME, resource
-							.getPresentationName());
+			meta.addAttribute(PRESENTATION_NAME, resource.getPresentationName());
 		meta.addAttribute(VERSION, resource.getVersion().toString());
 		meta.addAttribute("id", resource.getId());
 		@SuppressWarnings("unchecked")
-		Map<String, Object> map = new TreeMap<String, Object>(resource.getProperties());
+		Map<String, Object> map = new TreeMap<String, Object>(
+				resource.getProperties());
 		for (int i = 0; i < Resource.KEYS.length; i++) {
 			String key = KEYS[i];
-			if (!(key.equals(URL) || key.equals(SYMBOLIC_NAME) || key
-					.equals(VERSION) || key.equals(PRESENTATION_NAME))) {
+			if (!(key.equals(URL) || key.equals(SYMBOLIC_NAME)
+					|| key.equals(VERSION) || key.equals(PRESENTATION_NAME))) {
 				Object value = map.get(KEYS[i]);
 				if (value != null) {
 					if (value instanceof URL)
-						value = makeRelative(resource.getRepository().getURL(),(URL) value);
+						value = makeRelative(resource.getRepository().getURL(),
+								(URL) value);
 					meta.addContent(new Tag(key, value.toString()));
 				}
 			}
@@ -188,8 +195,8 @@ public class ResourceImpl implements Resource {
 		String[] categories = resource.getCategories();
 		for (int i = 0; i < categories.length; i++) {
 			String category = categories[i];
-			meta.addContent(new Tag("category", new String[] {"id",
-					category.toLowerCase()}));
+			meta.addContent(new Tag("category", new String[] { "id",
+					category.toLowerCase() }));
 		}
 
 		Capability[] capabilities = resource.getCapabilities();
@@ -214,13 +221,12 @@ public class ResourceImpl implements Resource {
 				String a = url.toExternalForm();
 				String b = repository.toExternalForm();
 				int index = b.lastIndexOf('/');
-				if ( index > 0 )
-					b = b.substring(0,index+1);
+				if (index > 0)
+					b = b.substring(0, index + 1);
 				if (a.startsWith(b))
 					return a.substring(b.length());
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			// Ignore
 		}
 		return url.toExternalForm();
@@ -310,8 +316,7 @@ public class ResourceImpl implements Resource {
 			ResourceImpl other = (ResourceImpl) o;
 			return symbolicName.equals(other.symbolicName)
 					&& version.equals(other.version);
-		}
-		catch (ClassCastException e) {
+		} catch (ClassCastException e) {
 			return false;
 		}
 	}
@@ -325,7 +330,7 @@ public class ResourceImpl implements Resource {
 	}
 
 	public synchronized String getId() {
-		if ( id == null )
+		if (id == null)
 			id = symbolicName + "/" + version;
 		return id;
 	}
@@ -359,7 +364,7 @@ public class ResourceImpl implements Resource {
 	public Set<Requirement> getExtendList() {
 		Set<Requirement> set = new HashSet<Requirement>();
 		for (Requirement impl : requirements) {
-			if ( impl.isExtend())
+			if (impl.isExtend())
 				set.add(impl);
 		}
 		return set;

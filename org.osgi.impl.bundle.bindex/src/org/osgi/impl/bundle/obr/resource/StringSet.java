@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +14,13 @@
  * limitations under the License.
  */
 
-
 package org.osgi.impl.bundle.obr.resource;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.StringTokenizer;
 
 public class StringSet extends HashSet<String> {
-	static final long	serialVersionUID	= 1L;
+	static final long serialVersionUID = 1L;
 
 	public StringSet(String set) {
 		StringTokenizer st = new StringTokenizer(set, ",");

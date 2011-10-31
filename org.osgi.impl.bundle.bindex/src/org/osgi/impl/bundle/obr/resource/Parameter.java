@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +16,26 @@
 package org.osgi.impl.bundle.obr.resource;
 
 class Parameter {
-	final static int	ATTRIBUTE	= 1;
-	final static int	DIRECTIVE	= 2;
-	final static int	SINGLE		= 0;
+	final static int ATTRIBUTE = 1;
+	final static int DIRECTIVE = 2;
+	final static int SINGLE = 0;
 
-	int					type;
-	String				key;
-	String				value;
+	int type;
+	String key;
+	String value;
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(key);
 		switch (type) {
-			case ATTRIBUTE :
-				sb.append("=");
-				break;
-			case DIRECTIVE :
-				sb.append(":=");
-				break;
-			case SINGLE :
-				return sb.toString();
+		case ATTRIBUTE:
+			sb.append("=");
+			break;
+		case DIRECTIVE:
+			sb.append(":=");
+			break;
+		case SINGLE:
+			return sb.toString();
 		}
 		sb.append(value);
 		return sb.toString();

@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,24 +14,40 @@
  * limitations under the License.
  */
 
-package org.osgi.impl.bundle.bindex;
+package org.osgi.service.bindex.impl;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.osgi.impl.bundle.obr.resource.*;
-import org.osgi.service.bindex.*;
+import org.osgi.impl.bundle.bindex.Indexer;
+import org.osgi.impl.bundle.obr.resource.RepositoryImpl;
+import org.osgi.impl.bundle.obr.resource.ResourceImpl;
+import org.osgi.impl.bundle.obr.resource.ResourceImplComparator;
+import org.osgi.impl.bundle.obr.resource.Tag;
+import org.osgi.service.bindex.BundleIndexer;
 
-import aQute.bnd.annotation.component.*;
+import aQute.bnd.annotation.component.Component;
 
 /**
- * BundleIndexer implementation based on Index
- * 
- * @version $Revision$
+ * BundleIndexer implementation based on Indexer
  */
 @Component
-public class BundleIndexerImpl extends Index implements BundleIndexer {
+public class BundleIndexerImpl implements BundleIndexer {
+	private Indexer indexer = new Indexer();
+
+	public BundleIndexerImpl() {
+		super();
+		indexer.setRepositoryFile(new File("repository.xml"));
+	}
+
 	OutputStream out;
 
 	public synchronized void index(Set<File> jarFiles, OutputStream out,
@@ -47,42 +61,35 @@ public class BundleIndexerImpl extends Index implements BundleIndexer {
 		if (config != null) {
 			String v = null;
 			if ((v = config.get(REPOSITORY_NAME)) != null)
-				super.name = v;
+				indexer.setRepositoryName(v);
 			if ((v = config.get(STYLESHEET)) != null)
-				super.stylesheet = v;
+				indexer.setStylesheet(v);
 			if ((v = config.get(URL_TEMPLATE)) != null)
-				super.urlTemplate = v;
+				indexer.setUrlTemplate(v);
 			if ((v = config.get(ROOT_URL)) != null)
-				super.root = new URL(v);
+				indexer.setRootURL(v);
 			if ((v = config.get(LICENSE_URL)) != null)
-				super.licenseURL = new URL(v);
+				indexer.setLicenseURL(v);
 		}
 
-		if (super.root == null)
-			super.root = new File("").getAbsoluteFile().toURI().toURL();
-		super.repository = new RepositoryImpl(super.root);
+		if (indexer.getRootURL() == null)
+			indexer.setRootURL(new File("").getAbsoluteFile().toURI().toURL());
+		indexer.setRepository(new RepositoryImpl(indexer.getRootURL()));
 
 		Set<ResourceImpl> resources = new HashSet<ResourceImpl>();
 		for (File f : jarFiles)
-			super.recurse(resources, f);
+			indexer.recurse(resources, f);
 
 		List<ResourceImpl> sorted = new ArrayList<ResourceImpl>(resources);
-		Collections.sort(sorted, new Comparator<ResourceImpl>() {
-			public int compare(ResourceImpl r1, ResourceImpl r2) {
-				String s1 = getName((ResourceImpl) r1);
-				String s2 = getName((ResourceImpl) r2);
-				return s1.compareTo(s2);
-			}
-		});
+		Collections.sort(sorted, new ResourceImplComparator());
 
-		Tag tag = super.doIndex(sorted);
+		Tag tag = indexer.doIndex(sorted);
 		PrintWriter pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
 
 		try {
-			pw.println("<?xml version='1.0' encoding='utf-8'?>");
-			pw.println("<?xml-stylesheet type='text/xsl' href='" + stylesheet
-					+ "'?>");
+			indexer.printXmlHeader(pw);
 			tag.print(0, pw);
+			pw.print("\n");
 		} finally {
 			pw.close();
 		}

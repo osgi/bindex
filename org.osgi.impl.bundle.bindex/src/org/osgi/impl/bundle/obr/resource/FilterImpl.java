@@ -1,6 +1,4 @@
 /*
- * $Id$
- * 
  * Copyright (c) 2000 Gatespace AB. All Rights Reserved.
  * Copyright (c) OSGi Alliance (2002, 2006, 2007). All Rights Reserved.
  *
@@ -18,34 +16,36 @@
  */
 package org.osgi.impl.bundle.obr.resource;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 public class FilterImpl {
-	final char		WILDCARD	= 65535;
+	final char WILDCARD = 65535;
 
-	final int		EQ			= 0;
-	final int		LE			= 1;
-	final int		GE			= 2;
-	final int		APPROX		= 3;
-	final int		LESS		= 4;
-	final int		GREATER		= 5;
-	final int		SUBSET		= 6;
-	final int		SUPERSET	= 7;
+	final int EQ = 0;
+	final int LE = 1;
+	final int GE = 2;
+	final int APPROX = 3;
+	final int LESS = 4;
+	final int GREATER = 5;
+	final int SUBSET = 6;
+	final int SUPERSET = 7;
 
-	private String	filter;
+	private String filter;
 
 	abstract class Query {
-		static final String	GARBAGE		= "Trailing garbage";
-		static final String	MALFORMED	= "Malformed query";
-		static final String	EMPTY		= "Empty list";
-		static final String	SUBEXPR		= "No subexpression";
-		static final String	OPERATOR	= "Undefined operator";
-		static final String	TRUNCATED	= "Truncated expression";
-		static final String	EQUALITY	= "Only equality supported";
+		static final String GARBAGE = "Trailing garbage";
+		static final String MALFORMED = "Malformed query";
+		static final String EMPTY = "Empty list";
+		static final String SUBEXPR = "No subexpression";
+		static final String OPERATOR = "Undefined operator";
+		static final String TRUNCATED = "Truncated expression";
+		static final String EQUALITY = "Only equality supported";
 
-		private String		tail;
+		private String tail;
 
 		boolean match() throws IllegalArgumentException {
 			tail = filter;
@@ -61,18 +61,18 @@ public class FilterImpl {
 			boolean val;
 
 			switch (tail.charAt(0)) {
-				case '&' :
-					val = doAnd();
-					break;
-				case '|' :
-					val = doOr();
-					break;
-				case '!' :
-					val = doNot();
-					break;
-				default :
-					val = doSimple();
-					break;
+			case '&':
+				val = doAnd();
+				break;
+			case '|':
+				val = doOr();
+				break;
+			case '!':
+				val = doNot();
+				break;
+			default:
+				val = doSimple();
+				break;
 			}
 
 			if (!prefix(")"))
@@ -149,17 +149,17 @@ public class FilterImpl {
 			int ix = 0;
 			label: for (; ix < len; ix++) {
 				switch (tail.charAt(ix)) {
-					case '(' :
-					case ')' :
-					case '<' :
-					case '>' :
-					case '=' :
-					case '~' :
-					case '*' :
-					case '}' :
-					case '{' :
-					case '\\' :
-						break label;
+				case '(':
+				case ')':
+				case '<':
+				case '>':
+				case '=':
+				case '~':
+				case '*':
+				case '}':
+				case '{':
+				case '\\':
+					break label;
 				}
 			}
 			String attr = tail.substring(0, ix).toLowerCase();
@@ -176,20 +176,20 @@ public class FilterImpl {
 			label: for (; ix < len; ix++) {
 				char c = tail.charAt(ix);
 				switch (c) {
-					case '(' :
-					case ')' :
+				case '(':
+				case ')':
+					break label;
+				case '*':
+					sb.append(WILDCARD);
+					break;
+				case '\\':
+					if (ix == len - 1)
 						break label;
-					case '*' :
-						sb.append(WILDCARD);
-						break;
-					case '\\' :
-						if (ix == len - 1)
-							break label;
-						sb.append(tail.charAt(++ix));
-						break;
-					default :
-						sb.append(c);
-						break;
+					sb.append(tail.charAt(++ix));
+					break;
+				default:
+					sb.append(c);
+					break;
 				}
 			}
 			tail = tail.substring(ix);
@@ -218,46 +218,36 @@ public class FilterImpl {
 				Class<? extends Object> numClass = obj.getClass();
 				if (numClass == String.class) {
 					return compareString((String) obj, op, s);
-				}
-				else if (numClass == Character.class) {
+				} else if (numClass == Character.class) {
 					return compareString(obj.toString(), op, s);
-				}
-				else if (numClass == Long.class) {
+				} else if (numClass == Long.class) {
 					return compareSign(op, Long.valueOf(s)
 							.compareTo((Long) obj));
-				}
-				else if (numClass == Integer.class) {
-					return compareSign(op, Integer.valueOf(s).compareTo(
-							(Integer) obj));
-				}
-				else if (numClass == Short.class) {
-					return compareSign(op, Short.valueOf(s).compareTo(
-							(Short) obj));
-				}
-				else if (numClass == Byte.class) {
+				} else if (numClass == Integer.class) {
+					return compareSign(op,
+							Integer.valueOf(s).compareTo((Integer) obj));
+				} else if (numClass == Short.class) {
+					return compareSign(op,
+							Short.valueOf(s).compareTo((Short) obj));
+				} else if (numClass == Byte.class) {
 					return compareSign(op, Byte.valueOf(s)
 							.compareTo((Byte) obj));
-				}
-				else if (numClass == Double.class) {
-					return compareSign(op, Double.valueOf(s).compareTo(
-							(Double) obj));
-				}
-				else if (numClass == Float.class) {
-					return compareSign(op, Float.valueOf(s).compareTo(
-							(Float) obj));
-				}
-				else if (numClass == Boolean.class) {
+				} else if (numClass == Double.class) {
+					return compareSign(op,
+							Double.valueOf(s).compareTo((Double) obj));
+				} else if (numClass == Float.class) {
+					return compareSign(op,
+							Float.valueOf(s).compareTo((Float) obj));
+				} else if (numClass == Boolean.class) {
 					if (op != EQ)
 						return false;
 					int a = Boolean.valueOf(s).booleanValue() ? 1 : 0;
 					int b = ((Boolean) obj).booleanValue() ? 1 : 0;
 					return compareSign(op, a - b);
-				}
-				else if (numClass == BigInteger.class) {
-					return compareSign(op, new BigInteger(s)
-							.compareTo((BigInteger) obj));
-				}
-				else if (obj instanceof Collection) {
+				} else if (numClass == BigInteger.class) {
+					return compareSign(op,
+							new BigInteger(s).compareTo((BigInteger) obj));
+				} else if (obj instanceof Collection) {
 					if (op == SUBSET || op == SUPERSET) {
 						StringSet set = new StringSet(s);
 						if (op == SUBSET)
@@ -266,18 +256,16 @@ public class FilterImpl {
 							return ((Collection<?>) obj).containsAll(set);
 					}
 
-					for (Object element : ((Collection<?>)obj)) {
+					for (Object element : ((Collection<?>) obj)) {
 						if (compare(element, op, s))
 							return true;
 					}
-				}
-				else if (numClass.isArray()) {
+				} else if (numClass.isArray()) {
 					int len = Array.getLength(obj);
 					for (int i = 0; i < len; i++)
 						if (compare(Array.get(obj, i), op, s))
 							return true;
-				}
-				else {
+				} else {
 					try {
 						if (op == SUPERSET || op == SUBSET) {
 							StringSet set = new StringSet(s);
@@ -287,44 +275,37 @@ public class FilterImpl {
 								return set.size() == 0
 										|| (set.size() == 1 && set.iterator()
 												.next().equals(obj));
-						}
-						else {
+						} else {
 							Constructor<? extends Object> constructor = numClass
-									.getConstructor(new Class[] {String.class});
+									.getConstructor(new Class[] { String.class });
 							Object instance = constructor
-									.newInstance(new Object[] {s});
+									.newInstance(new Object[] { s });
 							switch (op) {
-								case EQ :
-									return obj.equals(instance);
-								case LESS :
-									return ((Comparable) obj)
-											.compareTo(instance) < 0;
-								case GREATER :
-									return ((Comparable) obj)
-											.compareTo(instance) > 0;
-								case LE :
-									return ((Comparable) obj)
-											.compareTo(instance) <= 0;
-								case GE :
-									return ((Comparable) obj)
-											.compareTo(instance) >= 0;
+							case EQ:
+								return obj.equals(instance);
+							case LESS:
+								return ((Comparable) obj).compareTo(instance) < 0;
+							case GREATER:
+								return ((Comparable) obj).compareTo(instance) > 0;
+							case LE:
+								return ((Comparable) obj).compareTo(instance) <= 0;
+							case GE:
+								return ((Comparable) obj).compareTo(instance) >= 0;
 							}
 						}
-					}
-					catch (Exception e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 						// Ignore
 					}
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 			}
 			return false;
 		}
 	}
 
 	class DictQuery extends Query {
-		private Map<String, Object>	dict;
+		private Map<String, Object> dict;
 
 		DictQuery(Map<String, Object> dict) {
 			this.dict = dict;
@@ -345,8 +326,7 @@ public class FilterImpl {
 	public boolean match(Map<String, Object> dict) {
 		try {
 			return new DictQuery(dict).match();
-		}
-		catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			return false;
 		}
 	}
@@ -366,25 +346,25 @@ public class FilterImpl {
 
 	boolean compareString(String s1, int op, String s2) {
 		switch (op) {
-			case EQ :
-				return patSubstr(s1, s2);
-			case APPROX :
-				return patSubstr(fixupString(s1), fixupString(s2));
-			default :
-				return compareSign(op, s2.compareTo(s1));
+		case EQ:
+			return patSubstr(s1, s2);
+		case APPROX:
+			return patSubstr(fixupString(s1), fixupString(s2));
+		default:
+			return compareSign(op, s2.compareTo(s1));
 		}
 	}
 
 	boolean compareSign(int op, int cmp) {
 		switch (op) {
-			case LE :
-				return cmp >= 0;
-			case GE :
-				return cmp <= 0;
-			case EQ :
-				return cmp == 0;
-			default : /* APPROX */
-				return cmp == 0;
+		case LE:
+			return cmp >= 0;
+		case GE:
+			return cmp <= 0;
+		case EQ:
+			return cmp == 0;
+		default: /* APPROX */
+			return cmp == 0;
 		}
 	}
 
@@ -397,8 +377,7 @@ public class FilterImpl {
 			char c = s.charAt(i);
 			if (Character.isWhitespace(c)) {
 				isWhite = true;
-			}
-			else {
+			} else {
 				if (!isStart && isWhite)
 					sb.append(' ');
 				if (Character.isUpperCase(c))
@@ -425,8 +404,7 @@ public class FilterImpl {
 					return false;
 				s = s.substring(1);
 			}
-		}
-		else {
+		} else {
 			if (s.length() == 0 || s.charAt(0) != pat.charAt(0))
 				return false;
 			return patSubstr(s.substring(1), pat.substring(1));
