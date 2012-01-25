@@ -12,7 +12,7 @@
 		<tstamp>
 			<format property="NOW" pattern="yyyyMMdd-HHmm" timezone="UTC"/>
 		</tstamp>
-		
+
 		<dirname property="projectdir" file="${ant.file}" />
 		<dirname property="workspacedir" file="${projectdir}" />
 		<taskdef resource="aQute/bnd/ant/taskdef.properties">
@@ -22,6 +22,8 @@
 		</taskdef>
 
 		<bndprepare basedir="${projectdir}" print="false" top="${release.dir}" />
+		<property name="project.testsourcepath" value="${projectdir}/test"/>
+		<property name="project.testoutput" value="${projectdir}/bin_test"/>
 
 		<!-- mark init has been run -->
 		<property name="initialized" value="set" />
@@ -63,6 +65,15 @@
 				<exclude name="**/*.class" />
 			</fileset>
 		</copy>
+
+		<mkdir dir="${project.testoutput}"/>
+		<javac fork="yes" executable="${javac}" srcdir="${project.testsourcepath}" destdir="${project.testoutput}" classpath="${project.buildpath}" bootclasspath="${project.bootclasspath}" deprecation="true" listfiles="true" target="${javac.target}" source="${javac.source}" debug="${javac.debug}" includeAntRuntime="no" verbose="${verbose}"/>
+		<copy todir="${project.testoutput}" verbose="${verbose}" preservelastmodified="true">
+			<fileset dir="${project.testsourcepath}">
+				<exclude name="**/*.java" />
+				<exclude name="**/*.class" />
+			</fileset>
+		</copy>
 	</target>
 
 	<!-- 
@@ -73,7 +84,7 @@
 		<mkdir dir="${target}"/>
 		<bnd command="build" exceptions="true" basedir="${project}" />
 	</target>
-	
+
 	<target name="release" depends="build">
 		<subant target="release" inheritAll="false" buildpath="${project.dependson}">
 			<property name="donotrecurse" value="true" />
@@ -82,13 +93,17 @@
 	</target>
 
 	<target name="junit" depends="build">
-		<junit printsummary="true">			
-			<classpath path="${project.buildpath}" />
+		<mkdir dir="${target}/test-reports"/>
+		<junit printsummary="true" >
+			<classpath>
+				<path location="${project.testoutput}"/>
+				<path path="${project.buildpath}"/>
+			</classpath>
 			<formatter type="xml"/>
-			<batchtest todir="tmp" >
-			    <fileset dir="${src}">
-			      <include name="test/**.java"/>
-			    </fileset>
+			<batchtest todir="${target}/test-reports">
+				<fileset dir="${project.testsourcepath}">
+					<include name="**/Test*.java" />
+				</fileset>
 			</batchtest>
 		</junit>
 	</target>
@@ -105,7 +120,7 @@
 		<delete dir="bin"/>
 		<delete dir="bin_test"/>
 		<delete dir="${target}"/>
-		
+
 		<delete dir="${workspacedir}/cnf/tmp"/>
 		<delete dir="${workspacedir}/cnf/p2target"/>
 	</target>
@@ -118,8 +133,10 @@
 		<echo>project.name:           ${project.name}</echo>
 		<echo>Bundle-Version:         ${Bundle-Version}</echo>
 		<echo>project.output:         ${project.output}</echo>
+		<echo>project.testoutput      ${project-testoutput}</echo>
 		<echo>project.sourcepath:     ${project.sourcepath}</echo>
 		<echo>project.allsourcepath:  ${project.allsourcepath}</echo>
+		<echo>project.testsourcepath: ${project.testsourcepath}</echo>
 		<echo>project.buildpath:      ${project.buildpath}</echo>
 		<echo>project.testpath:       ${project.testpath}</echo>
 		<echo>project.dependson:      ${project.dependson}</echo>
@@ -147,7 +164,7 @@
 		<echo>-dependson:             ${-dependson}</echo>
 
 	</target>
-	
+
 	<!--
 	     Default Target
 	-->
