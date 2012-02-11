@@ -235,12 +235,9 @@
                 <xsl:apply-templates select="./testcase" mode="print.test"/>
             </table>
             
-            <p>Bundles:</p>
-            <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
-                <xsl:call-template name="testsuite.bundles.header"/>
-                <xsl:apply-templates select="./bundles/bundle" mode="print.bundle"/>
-            </table>
-
+            <xsl:apply-templates select="./bundles" mode="print.bundles">
+            </xsl:apply-templates>
+            
             <div class="Properties">
                 <a>
                     <xsl:attribute name="href">javascript:displayProperties('<xsl:value-of select="@package"/>.<xsl:value-of select="@name"/>');</xsl:attribute>
@@ -424,6 +421,14 @@
             </xsl:call-template>
         </td>
     </tr>
+</xsl:template>
+
+<xsl:template match="bundles" mode="print.bundles">
+    <h4>Bundles:</h4>
+    <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
+        <xsl:call-template name="testsuite.bundles.header"/>
+        <xsl:apply-templates select="./bundle" mode="print.bundle"/>
+    </table>
 </xsl:template>
 
 <xsl:template match="bundle" mode="print.bundle">
