@@ -2,12 +2,12 @@
 	osgi.cmpn,\
 	junit.osgi,\
 	org.mockito.mockito-all,\
-	org.osgi.impl.bundle.bindex2;version=project,\
+	bindex2;version=project,\
 	ee.j2se;version='[1.5,1.6)'
 Conditional-Package: org.example.tests.utils
 
 -runbundles: org.mockito.mockito-all,\
-	org.osgi.impl.bundle.bindex2;version=latest,\
+	bindex2;version=latest,\
 	osgi.cmpn
 -runvm: -ea
 -runfw: org.apache.felix.framework
