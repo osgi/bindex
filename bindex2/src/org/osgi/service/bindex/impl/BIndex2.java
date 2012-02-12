@@ -1,8 +1,11 @@
 package org.osgi.service.bindex.impl;
 
+import static org.osgi.framework.FrameworkUtil.createFilter;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.osgi.framework.Filter;
-import static org.osgi.framework.FrameworkUtil.createFilter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.bindex.Capability;
 import org.osgi.service.bindex.Requirement;
@@ -22,12 +24,12 @@ public class BIndex2 implements ResourceIndexer {
 	
 	static final String REPOSITORY_INCREMENT_OVERRIDE = "-repository.increment.override";
 	
-	private List<Pair<ResourceAnalyzer, Filter>> analyzers = new LinkedList<Pair<ResourceAnalyzer,Filter>>();
+	private final BundleAnalyzer bundleAnalyzer = new BundleAnalyzer();
+	private final List<Pair<ResourceAnalyzer, Filter>> analyzers = new LinkedList<Pair<ResourceAnalyzer,Filter>>();
 	
 	public BIndex2() {
 		try {
-			Filter bundleFilter = createFilter("(name=*.jar)");
-			addAnalyzer(new BundleAnalyzer(), bundleFilter);
+			addAnalyzer(bundleAnalyzer, createFilter("(name=*.jar)"));
 		} catch (InvalidSyntaxException e) {
 			// Can't happen...?
 			throw new RuntimeException("Unexpected internal error compiling filter");
@@ -87,20 +89,40 @@ public class BIndex2 implements ResourceIndexer {
 	}
 	
 	private Tag generateResource(File file, Map<String, String> config) throws Exception {
+		
 		JarResource resource = new JarResource(file);
 		List<Capability> caps = new LinkedList<Capability>();
 		List<Requirement> reqs = new LinkedList<Requirement>();
 		
+		// Read config settings and save in thread local state
+		if (config != null) {
+			URL rootURL;
+			String rootURLStr = config.get(ResourceIndexer.ROOT_URL);
+			if (rootURLStr != null)
+				rootURL = new URL(rootURLStr);
+			else
+				rootURL = new File("").getAbsoluteFile().toURI().toURL();
+			
+			String urlTemplate = config.get(ResourceIndexer.URL_TEMPLATE);
+			bundleAnalyzer.setStateLocal(new GeneratorState(rootURL, urlTemplate));
+		} else {
+			bundleAnalyzer.setStateLocal(null);
+		}
+		
 		// Iterate over the analyzers
-		synchronized (analyzers) {
-			for (Pair<ResourceAnalyzer, Filter> entry : analyzers) {
-				ResourceAnalyzer analyzer = entry.getFirst();
-				Filter filter = entry.getSecond();
-				
-				if (filter == null || filter.match(resource.getProperties())) {
-					analyzer.analyzeResource(resource, caps, reqs);
+		try {
+			synchronized (analyzers) {
+				for (Pair<ResourceAnalyzer, Filter> entry : analyzers) {
+					ResourceAnalyzer analyzer = entry.getFirst();
+					Filter filter = entry.getSecond();
+					
+					if (filter == null || filter.match(resource.getProperties())) {
+						analyzer.analyzeResource(resource, caps, reqs);
+					}
 				}
 			}
+		} finally {
+			bundleAnalyzer.setStateLocal(null);
 		}
 		
 		Tag resourceTag = new Tag(Schema.ELEM_RESOURCE);

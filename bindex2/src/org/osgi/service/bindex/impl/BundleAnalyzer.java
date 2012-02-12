@@ -1,5 +1,6 @@
 package org.osgi.service.bindex.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.osgi.service.bindex.Resource;
 import org.osgi.service.bindex.ResourceAnalyzer;
 
 public class BundleAnalyzer implements ResourceAnalyzer {
+	
+	private final ThreadLocal<GeneratorState> state = new ThreadLocal<GeneratorState>();
 
 	public void analyzeResource(Resource resource, List<? super Capability> capabilities, List<? super Requirement> requirements) throws Exception {
 		doIdentity(resource, capabilities);
@@ -43,18 +46,14 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 		String fragmentHost = attribs.getValue(Constants.FRAGMENT_HOST);
 		String identity = (fragmentHost == null) ? Namespaces.RESOURCE_TYPE_BUNDLE : Namespaces.RESOURCE_TYPE_FRAGMENT;
 		
-		Entry<String, Map<String, String>> bsn = parseBsn(attribs.getValue(Constants.BUNDLE_SYMBOLICNAME));
-		if (bsn == null)
-			throw new IllegalArgumentException("Not an OSGi R4 bundle: missing Bundle-SymbolicName manifest entry.");
+		SymbolicName bsn = getSymbolicName(resource);
+		boolean singleton = Boolean.TRUE.toString().equalsIgnoreCase(bsn.getAttributes().get(Constants.SINGLETON_DIRECTIVE + ":"));
 		
-		boolean singleton = Boolean.TRUE.toString().equalsIgnoreCase(bsn.getValue().get(Constants.SINGLETON_DIRECTIVE + ":"));
-		
-		String versionStr = attribs.getValue(Constants.BUNDLE_VERSION);
-		Version version = (versionStr != null) ? new Version(versionStr) : Version.emptyVersion;
+		Version version = getVersion(resource);
 		
 		Builder builder = new Builder()
 				.addAttribute(Namespaces.ATTR_TYPE, identity)
-				.addAttribute(Namespaces.NS_IDENTITY, bsn.getKey())
+				.addAttribute(Namespaces.NS_IDENTITY, bsn.getName())
 				.addAttribute(Namespaces.ATTR_VERSION, version)
 				.setNamespace(Namespaces.NS_IDENTITY);
 		if (singleton)
@@ -62,25 +61,132 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 		caps.add(builder.buildCapability());
 	}
 
-	private void doContent(Resource resource, List<? super Capability> caps) throws Exception {
+	private static Version getVersion(Resource resource) throws IOException {
+		Manifest manifest = resource.getManifest();
+		if (manifest == null)
+			throw new IllegalArgumentException(String.format("Cannot identify version for resource %s: manifest unavailable", resource.getLocation()));
+		String versionStr = manifest.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
+		Version version = (versionStr != null) ? new Version(versionStr) : Version.emptyVersion;
+		return version;
+	}
+	
+	SymbolicName getSymbolicName(Resource resource) throws IOException {
+		Manifest manifest = resource.getManifest();
+		if (manifest == null)
+			throw new IllegalArgumentException(String.format("Cannot identify symbolic name for resource %s: manifest unavailable", resource.getLocation()));
+
+		String header = manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+		if (header == null)
+			throw new IllegalArgumentException("Not an OSGi R4+ bundle: missing 'Bundle-SymbolicName' entry from manifest.");
+
+		Map<String, Map<String, String>> map = OSGiHeader.parseHeader(header);
+		if (map.size() != 1)
+			throw new IllegalArgumentException("Invalid format for Bundle-SymbolicName header.");
+
+		Entry<String, Map<String, String>> entry = map.entrySet().iterator().next();
+		return new SymbolicName(entry.getKey(), entry.getValue());
+	}
+	
+	void setStateLocal(GeneratorState state) {
+		this.state.set(state);
+	}
+	
+	private GeneratorState getStateLocal() {
+		return state.get();
+	}
+	
+	private void doContent(Resource resource, List<? super Capability> capabilities) throws Exception {
 		Builder builder = new Builder()
-			.setNamespace(Namespaces.NS_CONTENT)
-			.addAttribute(Namespaces.NS_CONTENT, resource.getLocation());
+			.setNamespace(Namespaces.NS_CONTENT);
+		
+		String location = calculateLocation(resource);
+		builder.addAttribute(Namespaces.NS_CONTENT, location);
 
 		long size = resource.getSize();
 		if (size > 0L) builder.addAttribute(Namespaces.ATTR_SIZE, size);
 		
 		Manifest manifest = resource.getManifest();
-		Attributes attribs = manifest.getMainAttributes();
-		
-		Properties localStrings = loadLocalStrings(resource);
-		String bundleName = translate(attribs.getValue(Constants.BUNDLE_NAME), localStrings);
-		if (bundleName != null)
-			builder.addAttribute(Namespaces.ATTR_DESCRIPTION, bundleName);
+		if (manifest != null) {
+			Attributes attribs = manifest.getMainAttributes();
+			
+			Properties localStrings = loadLocalStrings(resource);
+			String bundleName = translate(attribs.getValue(Constants.BUNDLE_NAME), localStrings);
+			if (bundleName != null)
+				builder.addAttribute(Namespaces.ATTR_DESCRIPTION, bundleName);
+		}
 
-		caps.add(builder.buildCapability());
+		capabilities.add(builder.buildCapability());
 	}
 	
+	private String calculateLocation(Resource resource) throws IOException {
+		String location = resource.getLocation();
+		
+		File path = new File(location);
+		String fileName = path.getName();
+		String dir = path.getParentFile().getAbsoluteFile().toURI().toURL().toString();
+		
+		String result = location;
+		
+		GeneratorState state = getStateLocal();
+		if (state != null) {
+			String rootUrl = state.getRootUrl().toString();
+			if (!rootUrl.endsWith("/"))
+				rootUrl += "/";
+			
+			if (rootUrl != null) {
+				if (dir.startsWith(rootUrl))
+					dir = dir.substring(rootUrl.length());
+				else
+					throw new IllegalArgumentException("Cannot index files above the root URL.");
+			}
+			
+			String urlTemplate = state.getUrlTemplate();
+			if (urlTemplate != null) {
+				result = urlTemplate.replaceAll("%s", getSymbolicName(resource).getName());
+				result = result.replaceAll("%f", fileName);
+				result = result.replaceAll("%p", dir);
+				result = result.replaceAll("%v", "" + getVersion(resource));
+			} else {
+				result = dir + fileName;
+			}
+		}
+		
+		return result;
+	}
+
+
+	private static String translate(String value, Properties localStrings) {
+		if (value == null)
+			return null;
+		
+		if (!value.startsWith("%"))
+			return value;
+		
+		value = value.substring(1);
+		return localStrings.getProperty(value, value);
+	}
+
+	private static Properties loadLocalStrings(Resource resource) throws IOException {
+		Properties props = new Properties();
+		
+		Attributes attribs = resource.getManifest().getMainAttributes();
+		String path = attribs.getValue(Constants.BUNDLE_LOCALIZATION);
+		if (path == null)
+			path = Constants.BUNDLE_LOCALIZATION_DEFAULT_BASENAME;
+		path += ".properties";
+		
+		Resource propsResource = resource.getChild(path);
+		if (propsResource != null) {
+			try {
+				props.load(propsResource.getStream());
+			} finally {
+				propsResource.close();
+			}
+		}
+		
+		return props;
+	}
+
 	private void doBundleAndHost(Resource resource, List<? super Capability> caps) throws Exception {
 		Builder bundleBuilder = new Builder().setNamespace(Namespaces.NS_WIRING_BUNDLE);
 		Builder hostBuilder   = new Builder().setNamespace(Namespaces.NS_WIRING_HOST);
@@ -90,16 +196,15 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 		if (attribs.getValue(Constants.FRAGMENT_HOST) != null)
 			return;
 		
-		Entry<String, Map<String, String>> bsn = parseBsn(attribs.getValue(Constants.BUNDLE_SYMBOLICNAME));
-		String versionStr = attribs.getValue(Constants.BUNDLE_VERSION);
-		Version version = (versionStr != null) ? new Version(versionStr) : Version.emptyVersion;
+		SymbolicName bsn = getSymbolicName(resource);
+		Version version = getVersion(resource);
 		
-		bundleBuilder.addAttribute(Namespaces.NS_WIRING_BUNDLE, bsn.getKey())
+		bundleBuilder.addAttribute(Namespaces.NS_WIRING_BUNDLE, bsn.getName())
 			.addAttribute(Constants.BUNDLE_VERSION_ATTRIBUTE, version);
-		hostBuilder.addAttribute(Namespaces.NS_WIRING_HOST, bsn.getKey())
+		hostBuilder.addAttribute(Namespaces.NS_WIRING_HOST, bsn.getName())
 			.addAttribute(Constants.BUNDLE_VERSION_ATTRIBUTE, version);
 		
-		for (Entry<String, String> attribEntry : bsn.getValue().entrySet()) {
+		for (Entry<String, String> attribEntry : bsn.getAttributes().entrySet()) {
 			String key = attribEntry.getKey();
 			if (key.endsWith(":")) {
 				String directiveName = key.substring(0, key.length() - 1);
@@ -389,16 +494,6 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 
-	private Entry<String, Map<String, String>> parseBsn(String bsn) {
-		if (bsn == null)
-			return null;
-		
-		Map<String, Map<String, String>> map = OSGiHeader.parseHeader(bsn);
-		if (map.size() != 1)
-			throw new IllegalArgumentException("Invalid format for Bundle-SymbolicName");
-		return map.entrySet().iterator().next();
-	}
-
 	private void addVersionFilter(StringBuilder filter, VersionRange version, VersionKey key) {
 		if (version.isRange()) {
 			if (version.includeLow()) {
@@ -431,36 +526,5 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 		}
 	}
 
-	private String translate(String value, Properties localStrings) {
-		if (value == null)
-			return null;
-		
-		if (!value.startsWith("%"))
-			return value;
-		
-		value = value.substring(1);
-		return localStrings.getProperty(value, value);
-	}
-
-	private Properties loadLocalStrings(Resource resource) throws IOException {
-		Properties props = new Properties();
-		
-		Attributes attribs = resource.getManifest().getMainAttributes();
-		String path = attribs.getValue(Constants.BUNDLE_LOCALIZATION);
-		if (path == null)
-			path = Constants.BUNDLE_LOCALIZATION_DEFAULT_BASENAME;
-		path += ".properties";
-		
-		Resource propsResource = resource.getChild(path);
-		if (propsResource != null) {
-			try {
-				props.load(propsResource.getStream());
-			} finally {
-				propsResource.close();
-			}
-		}
-		
-		return props;
-	}
 }
 

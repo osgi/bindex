@@ -130,4 +130,45 @@ public class TestIndexer extends TestCase {
 		assertEquals(expected, writer.toString().trim());
 	}
 	
+	public void testRootInSubdirectory() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
+		
+		StringWriter writer = new StringWriter();
+		indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
+		
+		String expected = Utils.readStream(new FileInputStream("testdata/fragment-subdir1.txt"));
+		assertEquals(expected, writer.toString().trim());
+	}
+
+	public void testRootInSubSubdirectory() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
+		
+		StringWriter writer = new StringWriter();
+		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
+		
+		String expected = Utils.readStream(new FileInputStream("testdata/fragment-subdir2.txt"));
+		assertEquals(expected, writer.toString().trim());
+	}
+
+	public void testBundleOutsideRootDirectory() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(ResourceIndexer.ROOT_URL, new File("testdata/subdir").getAbsoluteFile().toURI().toURL().toString());
+		
+		StringWriter writer = new StringWriter();
+		try {
+			indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
+			fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// expected
+		}
+	}
+
 }
