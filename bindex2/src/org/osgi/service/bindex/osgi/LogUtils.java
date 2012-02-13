@@ -2,10 +2,7 @@ package org.osgi.service.bindex.osgi;
 
 import static org.osgi.service.log.LogService.*;
 
-public final class LogUtils {
-
-	private LogUtils() {
-	}
+final class LogUtils {
 
 	public static String formatLogLevel(int level) {
 		switch (level) {
@@ -21,4 +18,5 @@ public final class LogUtils {
 			return "unknown";
 		}
 	}
+
 }

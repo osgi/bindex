@@ -1,6 +1,6 @@
 package org.osgi.service.bindex.impl;
 
-public class Namespaces {
+public final class Namespaces {
 	
 	public static final String NS_IDENTITY = "osgi.identity";
 	public static final String NS_CONTENT = "osgi.content";

@@ -15,11 +15,11 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		logTracker = new LogTracker(context);
 		logTracker.open();
-		
+
 		BIndex2 indexer = new BIndex2();
 		analyzerTracker = new AnalyzerTracker(context, indexer, logTracker);
 		analyzerTracker.open();
-		
+
 		registration = context.registerService(ResourceIndexer.class, indexer, null);
 	}
 

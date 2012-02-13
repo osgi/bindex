@@ -10,7 +10,7 @@ import org.osgi.service.bindex.impl.BIndex2;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class AnalyzerTracker extends ServiceTracker {
+class AnalyzerTracker extends ServiceTracker {
 
 	private final BIndex2 indexer;
 	private final LogService log;

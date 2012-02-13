@@ -8,7 +8,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class LogTracker extends ServiceTracker implements LogService {
+class LogTracker extends ServiceTracker implements LogService {
 	
 	public LogTracker(BundleContext context) {
 		super(context, LogService.class.getName(), null);

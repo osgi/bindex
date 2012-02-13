@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * BundleIndexer is an OSGi service that creates an OBR XML representation by
- * indexing bundle capabilities and requirements.
+ * ResourceIndexer is an OSGi service that creates a Repository XML
+ * representation by indexing resource capabilities and requirements.
  */
 public interface ResourceIndexer {
 
@@ -60,18 +60,37 @@ public interface ResourceIndexer {
 	public static final String VERBOSE = "verbose";
 
 	/**
-	 * Index a set of input files (bundles/jars) and/or directories, and write
-	 * the OBR XML representation to the given OutputStream
+	 * Index a set of input files and write the Repository XML representation to
+	 * the given writer
 	 * 
 	 * @param files
-	 *            a set of input files (bundles/jars) and/or directories
+	 *            a set of input files
 	 * @param out
-	 *            the Writer to write the OBR XML representation to
+	 *            the Writer to write the OBR XML representation
 	 * @param config
 	 *            a set of optional parameters (use the interface constants as
 	 *            keys)
+	 * @throws Exception
 	 */
 	void index(Set<File> files, Writer out, Map<String, String> config) throws Exception;
 
+	/**
+	 * Index a set of input files and write a Repository XML fragment to the
+	 * given writer. Note that the result will be one or more XML
+	 * <code>resource</code> elements <em>without</em> a top-level surrounding
+	 * <code>repository</code> element. The resulting XML is therefore not
+	 * well-formed. This method may be useful for repository managers that wish
+	 * to (re-)index individual resources and assemble the XML fragments into a
+	 * complete repository document later.
+	 * 
+	 * @param files
+	 *            a set of input files
+	 * @param out
+	 *            the Writer to write the Repository XML representation
+	 * @param config
+	 *            a set of optional parameter (use the interface constants as
+	 *            keys)
+	 * @throws Exception
+	 */
 	void indexFragment(Set<File> files, Writer out, Map<String, String> config) throws Exception;
 }
