@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <?xml-stylesheet type='text/xsl' href='http://www.osgi.org/www/obr2html.xsl'?>
 
-<repository lastmodified='20120213003215.373' name='Local Repository'>
+<repository lastmodified='20120213124231.861' name='Local Repository'>
   <resource id='biz.aQute.bnd/1.45.0' presentationname='bnd' symbolicname='biz.aQute.bnd' uri='biz.aQute.bnd/biz.aQute.bnd-1.45.0.jar' version='1.45.0'>
     <description>
       A utility and plugin to wrap, build, print, or otherwise manipulate
@@ -597,6 +597,42 @@
     </require>
     <require extend='false' filter='(&amp;(package=sun.reflect)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
       Import package sun.reflect
+    </require>
+  </resource>
+  <resource id='org.osgi.impl.bundle.bindex/2.2.0' presentationname='org.osgi.impl.bundle.bindex' symbolicname='org.osgi.impl.bundle.bindex' uri='org.osgi.impl.bundle.bindex/org.osgi.impl.bundle.bindex-2.2.0.jar' version='2.2.0'>
+    <description>
+      Provides a command line utility to index a set of bundles.
+       This code can be run from the command line.
+    </description>
+    <size>
+      154617
+    </size>
+    <license>
+      http://www.apache.org/licenses/LICENSE-2.0;description="This
+       material is licensed under the Apache Software License, Version
+       2.0"; link="http://www.apache.org/licenses/LICENSE-2.0"
+    </license>
+    <copyright>
+      (c) Copyright OSGi Alliance, contains licensed code from kXML
+    </copyright>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='org.osgi.impl.bundle.bindex'/>
+      <p n='symbolicname' v='org.osgi.impl.bundle.bindex'/>
+      <p n='version' t='version' v='2.2.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.bindex'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=org.apache.tools.ant)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.tools.ant
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.tools.ant.types)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.tools.ant.types
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.bindex)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.osgi.service.bindex ;version=[1.0.0,2.0.0)
     </require>
   </resource>
   <resource id='osgi.cmpn/4.2.0.200908310645' presentationname='osgi.cmpn' symbolicname='osgi.cmpn' uri='osgi.cmpn/osgi.cmpn-4.2.0.jar' version='4.2.0.200908310645'>

@@ -27,6 +27,8 @@
 			<fileset dir="${target}/test-reports" includes="TEST-*.xml"/>
 			<report format="noframes" todir="${target}/test-reports" styledir="xsl"/>
 		</junitreport>
+		
+		<echo message="Generated Test Report in ${target}/test-reports/junit-noframes.html"/>
 	</target>
 	
 	<target name="__copy_test_reports">

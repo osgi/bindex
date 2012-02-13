@@ -18,8 +18,8 @@ Import-Package:\
 	org.osgi.util.tracker,\
 	*
 
-Private-Package:\
-	org.osgi.service.bindex.impl,\
+Private-Package: org.osgi.service.bindex.impl,\
+	org.osgi.service.bindex.impl.util,\
 	org.osgi.service.bindex.osgi,\
 	org.osgi.impl.bundle.bindex.cli,\
 	${pojosr-pkgs},\
@@ -41,3 +41,4 @@ osgi-pkgs:\
 	org.osgi.service.startlevel,\
 	org.osgi.service.url,\
 	org.osgi.util.tracker;-split-package:=first
+Bundle-Version: 0.0.1
