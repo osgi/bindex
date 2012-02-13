@@ -10,7 +10,7 @@ Git-SHA: ${system;git rev-list -1 HEAD}
 
 -plugin:        aQute.lib.deployer.obr.LocalOBR;name='Local Repository';local=${repo},\
                 aQute.lib.deployer.obr.OBR;name='Build Repository';mode=build;locations='file:${build}/buildrepo/repository.xml',\
-                aQute.lib.deployer.obr.LocalOBR;name='Release';local=${releaserepo},\
+                aQute.lib.deployer.obr.LocalOBR;name='Release';local=${workspace}/bindex2.build/release,\
                 org.osgi.impl.bundle.bindex.BundleIndexerImpl;path:=${repo}/org.osgi.impl.bundle.bindex/org.osgi.impl.bundle.bindex-2.2.0.jar
 
 -releaserepo:   Release

@@ -231,3 +231,15 @@ Note that if an analyzer implementation relies on Declarative Service to manage 
 	java -cp bindex2.jar;org.apache.felix.scr-1.6.0.jar;MyAnalyzer.jar \
 			 org.osgi.impl.bundle.bindex.cli.Index \
 			 bundles/*.jar
+
+Building from Source
+====================
+
+BIndex can be built from source as follows:
+
+	$ cd bindex2.build
+	$ ant release
+
+The `bindex2.jar` file will be released into `release/bindex2/bindex2-VERSION.jar`.
+
+To run all unit and integration tests, invoke `ant test`. The test report will be generated into `generated/test-reports/junit-noframes.html`.
