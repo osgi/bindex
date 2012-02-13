@@ -1,10 +1,10 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.types;
 
 import java.util.Collection;
 
 import org.osgi.framework.Version;
 
-public class Type {
+class Type {
 
 	private final ScalarType type;
 	private final boolean list;

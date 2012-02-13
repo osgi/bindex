@@ -1,7 +1,6 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.util;
 
 import java.util.*;
-
 
 public interface Reporter {
 	void error(String s, Object ... args);

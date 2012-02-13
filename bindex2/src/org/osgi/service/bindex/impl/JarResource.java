@@ -17,7 +17,7 @@ import java.util.jar.Manifest;
 
 import org.osgi.service.bindex.Resource;
 
-public class JarResource implements Resource {
+class JarResource implements Resource {
 	
 	private final File file;
 	private final JarFile jarFile;

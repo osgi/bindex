@@ -1,4 +1,4 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.util;
 
 import java.util.List;
 import java.util.Map;

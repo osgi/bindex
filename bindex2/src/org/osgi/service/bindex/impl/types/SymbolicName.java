@@ -1,10 +1,10 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.types;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class SymbolicName {
+public class SymbolicName {
 
 	private final String name;
 	private final Map<String, String> attributes;

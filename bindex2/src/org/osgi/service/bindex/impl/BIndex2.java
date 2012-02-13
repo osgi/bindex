@@ -19,6 +19,9 @@ import org.osgi.service.bindex.Capability;
 import org.osgi.service.bindex.Requirement;
 import org.osgi.service.bindex.ResourceAnalyzer;
 import org.osgi.service.bindex.ResourceIndexer;
+import org.osgi.service.bindex.impl.types.TypedAttribute;
+import org.osgi.service.bindex.impl.util.Pair;
+import org.osgi.service.bindex.impl.util.Tag;
 
 public class BIndex2 implements ResourceIndexer {
 	

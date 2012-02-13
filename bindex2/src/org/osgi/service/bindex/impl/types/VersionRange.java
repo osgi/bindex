@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.types;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,8 +22,10 @@ import java.util.regex.Pattern;
 import org.osgi.framework.Version;
 
 public class VersionRange implements Comparable<VersionRange> {
-	Version high;
-	Version low;
+	
+	final Version high;
+	final Version low;
+	
 	char start = '[';
 	char end = ']';
 
@@ -110,5 +112,13 @@ public class VersionRange implements Comparable<VersionRange> {
 			return 0;
 		else
 			return 1;
+	}
+	
+	public Version getHigh() {
+		return high;
+	}
+	
+	public Version getLow() {
+		return low;
 	}
 }

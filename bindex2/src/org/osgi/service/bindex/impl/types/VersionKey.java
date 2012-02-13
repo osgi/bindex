@@ -1,8 +1,8 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.types;
 
 import org.osgi.framework.Constants;
 
-enum VersionKey {
+public enum VersionKey {
 
 	PackageVersion(Constants.VERSION_ATTRIBUTE), BundleVersion(Constants.BUNDLE_VERSION_ATTRIBUTE);
 

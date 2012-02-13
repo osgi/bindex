@@ -1,8 +1,8 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.util;
 
 import java.util.*;
 
-public class Create {
+class Create {
     
     public static <K,V>  Map<K, V> map() {
         return new LinkedHashMap<K,V>();

@@ -9,7 +9,7 @@ import java.util.jar.Manifest;
 
 import org.osgi.service.bindex.Resource;
 
-public class FlatStreamResource implements Resource {
+class FlatStreamResource implements Resource {
 	
 	private final String location;
 	private final InputStream stream;

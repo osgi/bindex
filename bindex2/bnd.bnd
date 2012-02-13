@@ -18,7 +18,9 @@ Import-Package:\
 	org.osgi.util.tracker,\
 	*
 
-Private-Package: org.osgi.service.bindex.impl,\
+Private-Package:\
+	org.osgi.service.bindex.impl,\
+	org.osgi.service.bindex.impl.types,\
 	org.osgi.service.bindex.impl.util,\
 	org.osgi.service.bindex.osgi,\
 	org.osgi.impl.bundle.bindex.cli,\

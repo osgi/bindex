@@ -1,4 +1,7 @@
-package org.osgi.service.bindex.impl;
+package org.osgi.service.bindex.impl.types;
+
+import org.osgi.service.bindex.impl.Schema;
+import org.osgi.service.bindex.impl.util.Tag;
 
 public class TypedAttribute {
 

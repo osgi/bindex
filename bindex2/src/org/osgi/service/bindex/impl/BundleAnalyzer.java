@@ -17,8 +17,15 @@ import org.osgi.service.bindex.Capability;
 import org.osgi.service.bindex.Requirement;
 import org.osgi.service.bindex.Resource;
 import org.osgi.service.bindex.ResourceAnalyzer;
+import org.osgi.service.bindex.impl.types.ScalarType;
+import org.osgi.service.bindex.impl.types.SymbolicName;
+import org.osgi.service.bindex.impl.types.VersionKey;
+import org.osgi.service.bindex.impl.types.VersionRange;
+import org.osgi.service.bindex.impl.util.OSGiHeader;
+import org.osgi.service.bindex.impl.util.QuotedTokenizer;
+import org.osgi.service.bindex.impl.util.Yield;
 
-public class BundleAnalyzer implements ResourceAnalyzer {
+class BundleAnalyzer implements ResourceAnalyzer {
 	
 	private final ThreadLocal<GeneratorState> state = new ThreadLocal<GeneratorState>();
 
@@ -499,24 +506,24 @@ public class BundleAnalyzer implements ResourceAnalyzer {
 			if (version.includeLow()) {
 				filter.append("(").append(key.getKey());
 				filter.append(">=");
-				filter.append(version.low);
+				filter.append(version.getLow());
 				filter.append(")");
 			} else {
 				filter.append("(!(").append(key.getKey());
 				filter.append("<=");
-				filter.append(version.low);
+				filter.append(version.getLow());
 				filter.append("))");
 			}
 
 			if (version.includeHigh()) {
 				filter.append("(").append(key.getKey());
 				filter.append("<=");
-				filter.append(version.high);
+				filter.append(version.getHigh());
 				filter.append(")");
 			} else {
 				filter.append("(!(").append(key.getKey());
 				filter.append(">=");
-				filter.append(version.high);
+				filter.append(version.getHigh());
 				filter.append("))");
 			}
 		} else {
