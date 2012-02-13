@@ -28,12 +28,13 @@ public class AnalyzerTracker extends ServiceTracker {
 	}
 
 	@Override
-	public Object addingService(ServiceReference reference) {
+	public Object addingService(@SuppressWarnings("rawtypes") ServiceReference reference) {
 		TrackingStruct struct = new TrackingStruct();
 		try {
 			String filterStr = (String) reference.getProperty(ResourceAnalyzer.FILTER);
 			Filter filter = (filterStr != null) ? FrameworkUtil.createFilter(filterStr) : null;
 
+			@SuppressWarnings("unchecked")
 			ResourceAnalyzer analyzer = (ResourceAnalyzer) context.getService(reference);
 			if (analyzer == null)
 				return null;
@@ -52,7 +53,7 @@ public class AnalyzerTracker extends ServiceTracker {
 	}
 	
 	@Override
-	public void modifiedService(ServiceReference reference, Object service) {
+	public void modifiedService(@SuppressWarnings("rawtypes") ServiceReference reference, Object service) {
 		TrackingStruct struct = (TrackingStruct) service;
 		
 		if (struct.valid) {
@@ -76,7 +77,7 @@ public class AnalyzerTracker extends ServiceTracker {
 	}
 
 	@Override
-	public void removedService(ServiceReference reference, Object service) {
+	public void removedService(@SuppressWarnings("rawtypes") ServiceReference reference, Object service) {
 		TrackingStruct struct = (TrackingStruct) service;
 		if (struct.valid)
 			indexer.removeAnalyzer(struct.analyzer, struct.filter);

@@ -5,10 +5,11 @@ import static org.example.tests.utils.Utils.*;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -26,7 +27,7 @@ public class TestOSGiServices extends TestCase {
 	private final BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
 	
 	public void testBasicServiceInvocation() throws Exception {
-		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
+		ServiceReference<ResourceIndexer> ref = context.getServiceReference(ResourceIndexer.class);
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
 		
 		StringWriter writer = new StringWriter();
@@ -41,9 +42,9 @@ public class TestOSGiServices extends TestCase {
 	}
 	
 	public void testWhiteboardAnalyzer() throws Exception {
-		ServiceRegistration reg = context.registerService(ResourceAnalyzer.class.getName(), new WibbleAnalyzer(), null);
+		ServiceRegistration<ResourceAnalyzer> reg = context.registerService(ResourceAnalyzer.class, new WibbleAnalyzer(), null);
 		
-		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
+		ServiceReference<ResourceIndexer> ref = context.getServiceReference(ResourceIndexer.class);
 		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
 		StringWriter writer = new StringWriter();
 		
@@ -58,12 +59,12 @@ public class TestOSGiServices extends TestCase {
 	}
 	
 	public void testWhiteboardAnalyzerWithFilter() throws Exception {
-		Properties analyzerProps = new Properties();
+		Dictionary<String, Object> analyzerProps = new Hashtable<String, Object>();
 		analyzerProps.put(ResourceAnalyzer.FILTER, "(location=*sion.jar)");
-		ServiceRegistration reg = context.registerService(ResourceAnalyzer.class.getName(), new WibbleAnalyzer(), analyzerProps);
+		ServiceRegistration<ResourceAnalyzer> reg = context.registerService(ResourceAnalyzer.class, new WibbleAnalyzer(), analyzerProps);
 		
-		ServiceReference ref = context.getServiceReference(ResourceIndexer.class.getName());
-		ResourceIndexer indexer = (ResourceIndexer) context.getService(ref);
+		ServiceReference<ResourceIndexer> ref = context.getServiceReference(ResourceIndexer.class);
+		ResourceIndexer indexer = context.getService(ref);
 		StringWriter writer = new StringWriter();
 		
 		Set<File> files = new LinkedHashSet<File>();

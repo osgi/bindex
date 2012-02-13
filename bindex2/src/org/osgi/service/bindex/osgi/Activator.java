@@ -10,7 +10,7 @@ public class Activator implements BundleActivator {
 
 	private LogTracker logTracker;
 	private AnalyzerTracker analyzerTracker;
-	private ServiceRegistration registration;
+	private ServiceRegistration<ResourceIndexer> registration;
 
 	public void start(BundleContext context) throws Exception {
 		logTracker = new LogTracker(context);
@@ -20,7 +20,7 @@ public class Activator implements BundleActivator {
 		analyzerTracker = new AnalyzerTracker(context, indexer, logTracker);
 		analyzerTracker.open();
 		
-		registration = context.registerService(ResourceIndexer.class.getName(), indexer, null);
+		registration = context.registerService(ResourceIndexer.class, indexer, null);
 	}
 
 	public void stop(BundleContext context) throws Exception {

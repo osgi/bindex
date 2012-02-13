@@ -1,4 +1,4 @@
--buildpath: osgi.core;version='[4.1,5)',\
+-buildpath: osgi.core;version=4.3,\
 	osgi.cmpn,\
 	junit.osgi,\
 	org.mockito.mockito-all,\

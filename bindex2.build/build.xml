@@ -6,6 +6,9 @@
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath location="${basedir}/ant-contrib-1.0b3.jar" />
 	</taskdef>
+	
+	<target name="junit">
+	</target>
 
 	<target name="test" depends="init">
 		<!-- Do all the tests -->
