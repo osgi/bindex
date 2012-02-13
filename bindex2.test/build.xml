@@ -2,12 +2,12 @@
 <project name="project" default="build"> 
 	<import file="../cnf/build.xml"/>
 	
-	<target name="test" depends="compile">
+	<target name="test" depends="build">
 		<!-- OSGi Tests -->
-		<bnd command="test" exceptions="true" basedir="${project}" failok="false"/>
+		<bnd command="test" exceptions="true" basedir="${projectdir}" failok="false"/>
 		
 		<!-- Standlone Library Tests -->
-		<junit fork="true" printsummary="true">
+		<junit fork="true" printsummary="true" dir="${projectdir}">
 			<classpath>
 				<path location="${workspacedir}/cnf/buildrepo/junit.osgi/junit.osgi-3.8.2.jar"/>
 				<pathelement location="${project.output}"/>
@@ -18,12 +18,6 @@
 				<fileset dir="${project.sourcepath}" includes="org/example/tests/standalone/Test*.java"/>
 			</batchtest>
 		</junit>
-		
-		<!-- Generate combined report -->
-		<junitreport todir="${target}">
-			<fileset dir="${target}/test-reports" includes="TEST-*.xml"/>
-			<report format="noframes" todir="${target}" styledir="${workspacedir}/cnf/xsl"/>
-		</junitreport>
 	</target>
 
 </project>

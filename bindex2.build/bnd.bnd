@@ -1,0 +1,4 @@
+-nobundles
+-dependson:\
+	bindex2,\
+	bindex2.test
