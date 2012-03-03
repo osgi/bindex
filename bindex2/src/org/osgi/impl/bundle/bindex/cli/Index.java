@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.osgi.framework.launch.Framework;
-import org.osgi.service.bindex.ResourceIndexer;
+import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.util.tracker.ServiceTracker;
 
 import de.kalpatec.pojosr.framework.PojoServiceRegistryFactoryImpl;

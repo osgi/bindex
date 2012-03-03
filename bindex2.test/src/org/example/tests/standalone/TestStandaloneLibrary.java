@@ -10,8 +10,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.osgi.service.bindex.ResourceIndexer;
-import org.osgi.service.bindex.impl.BIndex2;
+import org.osgi.service.indexer.ResourceIndexer;
+import org.osgi.service.indexer.impl.BIndex2;
 
 public class TestStandaloneLibrary extends TestCase {
 

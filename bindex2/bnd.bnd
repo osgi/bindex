@@ -6,11 +6,11 @@
 
 Main-Class: org.osgi.impl.bundle.bindex.cli.Index
 
-Bundle-Activator: org.osgi.service.bindex.osgi.Activator
+Bundle-Activator: org.osgi.service.indexer.osgi.Activator
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
 Export-Package:\
-	org.osgi.service.bindex,\
+	org.osgi.service.indexer,\
 	org.osgi.service.log
 
 Import-Package:\
@@ -19,10 +19,10 @@ Import-Package:\
 	*
 
 Private-Package:\
-	org.osgi.service.bindex.impl,\
-	org.osgi.service.bindex.impl.types,\
-	org.osgi.service.bindex.impl.util,\
-	org.osgi.service.bindex.osgi,\
+	org.osgi.service.indexer.impl,\
+	org.osgi.service.indexer.impl.types,\
+	org.osgi.service.indexer.impl.util,\
+	org.osgi.service.indexer.osgi,\
 	org.osgi.impl.bundle.bindex.cli,\
 	${pojosr-pkgs},\
 	${osgi-pkgs}

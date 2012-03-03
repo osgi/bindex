@@ -1,4 +1,4 @@
-package org.example.tests.utils;
+package org.osgi.service.indexer.impl;
 
 import java.util.List;
 

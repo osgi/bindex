@@ -19,8 +19,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.bindex.ResourceAnalyzer;
-import org.osgi.service.bindex.ResourceIndexer;
+import org.osgi.service.indexer.ResourceAnalyzer;
+import org.osgi.service.indexer.ResourceIndexer;
 
 public class TestOSGiServices extends TestCase {
 
