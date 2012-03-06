@@ -5,13 +5,23 @@ BIndex2 program is a small Java program that generates repository indexes compli
 
 BIndex2 is a command line application that can easily be integrated in scripts. It is also an OSGi bundle that publishes a service under the `ResourceIndexer` interface, and a standalone library that can be used in conventional Java runtimes. While mainly intended for indexing OSGi bundles, it can generate metadata for any arbitrary file type by extending it with pluggable `ResourceAnalyzer` objects.
 
+Files
+=====
+
+BIndex2 is shipped as two alternative forms:
+
+* `bindex2.lib` is a pure library and OSGi bundle. Use this if you want to embed index generation functionality into an existing application. See sections "Library Usage" and "OSGi Bundle Usage" below.
+
+* `bindex2.cli` is a standalone command-line application. See section "Command Line Usage" below.
+
+* `bindex2.ant` (not available yet) is an ANT task. See section "ANT Usage" below.
 
 Command Line Usage
 ==================
 
 The basic command line usage is as follows:
 
-	java -jar bindex2.jar -n Bundles bundles/*.jar
+	java -jar bindex2.cli.jar -n Bundles bundles/*.jar
 
 This generates an index file in the local directory named `repository.xml` with metadata for all JAR files found under the `bundles` directory. The repository name will be set to `Bundles` and the URLs for the resources will be relative to the current directory, i.e.:
 
@@ -19,7 +29,7 @@ This generates an index file in the local directory named `repository.xml` with 
 
 The full set of options is as follows:
 
-	java -jar bindex2.jar
+	java -jar bindex2.cli.jar
 		[-h]
 		[-r repository.(xml|zip)]
 		[-n Untitled]
@@ -95,7 +105,7 @@ If custom resource analyzers are required (see below), these can be simply place
 Library Usage
 =============
 
-BIndex2 can be used as a JAR library in a conventional Java application or web/Java EE container by adding `bindex2.jar` to your application classpath. The API is as follows:
+BIndex2 can be used as a JAR library in a conventional Java application or web/Java EE container by adding `bindex2.lib.jar` to your application classpath. The API is as follows:
 
 	BIndex2 indexer = new BIndex2();
 	// optional: add one or more custom resource analyzers
@@ -123,7 +133,7 @@ For more information on the filter string syntax and the properties available to
 OSGi Bundle Usage
 =================
 
-BIndex2 is also an OSGi bundle that publishes a service under the interface `org.osgi.service.bindex.ResourceIndexer` when in ACTIVE state. For example, to use the `ResourceIndexer` service from a Declarative Services component:
+`bindex2.lib` is also an OSGi bundle that publishes a service under the interface `org.osgi.service.bindex.ResourceIndexer` when in ACTIVE state. For example, to use the `ResourceIndexer` service from a Declarative Services component:
 
 	@Reference
 	public void setIndexer(ResourceIndexer indexer) {
@@ -149,9 +159,18 @@ BIndex2 is expected to be used primarily for analyzing and indexing OSGi bundles
 
 For example, we may wish to extend BIndex2 to understand configuration files, script files, or native libraries. Alternatively we may wish to process custom extender headers from the MANIFEST.MF of OSGi bundles.
 
-The `ResourceAnalyzer` interfaces defines a single method `analyzeResource` which takes a `Resource` object and the lists of already discovered Requirements and Capabilities. An analyzer is permitted to add zero to many of each but it must not remove or alter any existing entries. The `Builder` class is provided as a convenience for constructing instances of Capability and Requirement.
+The `ResourceAnalyzer` interfaces defines a single method `analyzeResource`:
 
-The `Resource` interface is an abstraction over the types of resource that may be supplied to the analyzer. Analyzer implementations are not expected to implement `Resource`. The abbreviated interface is as follows:
+	public interface ResourceAnalyzer {
+		static final String FILTER = "filter";
+		void analyzeResource(Resource resource,
+				List<? super Capability> capabilties,
+				List<? super Requirement> requirements) throws Exception;
+	}
+
+The `analyzeResource` method takes a `Resource` object and the lists of already discovered Requirements and Capabilities. An analyzer is permitted to add zero to many of each but it must not remove or alter any existing entries. A `Builder` class is provided as a convenience for constructing instances of Capability and Requirement.
+
+The `Resource` interface is an abstraction over the types of resource that may be supplied to the analyzer. Analyzer implementations are not expected to implement `Resource`. The abridged interface definition is as follows:
 
 	public interface Resource {
 		String getLocation();
@@ -164,9 +183,9 @@ The `Resource` interface is an abstraction over the types of resource that may b
 		void close();
 	}
 
-We expect that in the vast majority of cases, the resource in question will be a bundle, i.e. a JAR file. Therefore the `getManifest`, `listChildren` and `getChild` methods are provided as optimisations so that each analyzer does not need to re-parse the JAR file. If the resource does not contain a `META-INF/MANIFEST.MF` then `getManifest` will return `null`. If the resource is not a "compound" resource such as a JAR or ZIP then `listChildren` and `getChild` will return `null` for all input values.
+We expect that in the majority of cases the resource will be an OSGi bundle, and therefore a JAR file. Therefore we provide the `getManifest`, `listChildren` and `getChild` methods as optimisations, so that every analyzer does not need to re-parse the JAR contents. If the resource does not contain a `META-INF/MANIFEST.MF` then `getManifest` will return `null`. If the resource is not a "compound" resource such as a JAR or ZIP then `listChildren` and `getChild` will return `null` for all input values.
 
-Access to the underlying content of the file is always available through the `getStream` method but this should be considered an expensive operation that should only be called when the data required is not available from the properties, manifest or children.
+Access to the underlying content of the file is always available through the `getStream` method but this should be treated as an expensive operation that should only be called when the data required is not otherwise available from the properties, manifest or children.
 
 Example Analyzer
 ----------------

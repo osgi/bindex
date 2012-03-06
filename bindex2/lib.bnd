@@ -1,0 +1,21 @@
+Bundle-Name: BIndex2: Repository Index Generator
+Bundle-Activator: org.osgi.service.indexer.osgi.Activator
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+
+# We must embed org.osgi.framework so that our use of Filter
+# resolved when running in plain Java.
+Private-Package:\
+	${bindex-pkgs},\
+	org.osgi.framework
+
+# Although org.osgi.framework is embedded, we must import it from the
+# actual framework when running in OSGi.
+Import-Package:\
+	org.osgi.framework;version='[1.5,2)',\
+	org.osgi.service.log;version='[1.3,2)',\
+	*
+
+# Export the indexer package. Also export the log
+Export-Package:\
+	org.osgi.service.indexer,\
+	org.osgi.service.log

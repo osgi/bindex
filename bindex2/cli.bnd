@@ -1,0 +1,24 @@
+Bundle-Name: BIndex2: Repository Index Generator (Standalone)
+Main-Class: org.osgi.impl.bundle.bindex.cli.Index
+
+Private-Package:\
+	org.osgi.impl.bundle.bindex.cli,\
+	${bindex-pkgs},\
+	${pojosr-pkgs},\
+	${osgi-pkgs}
+
+pojosr-pkgs: de.kalpatec.pojosr.*
+
+osgi-pkgs:\
+	org.osgi.framework,\
+	org.osgi.framework.hooks.bundle,\
+	org.osgi.framework.hooks.resolver,\
+	org.osgi.framework.hooks.service,\
+	org.osgi.framework.hooks.weaving,\
+	org.osgi.framework.launch,\
+	org.osgi.framework.startlevel,\
+	org.osgi.framework.wiring,\
+	org.osgi.service.packageadmin,\
+	org.osgi.service.startlevel,\
+	org.osgi.service.url,\
+	org.osgi.util.tracker;-split-package:=first
