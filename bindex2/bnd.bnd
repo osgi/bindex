@@ -3,7 +3,8 @@
 	lib/de.kalpatec.pojosr.framework-0.1.8.jar;version=file,\
 	junit.osgi,\
 	lib/kxml2-min.jar;version=file,\
-	osgi.cmpn
+	osgi.cmpn,\
+	org.mockito.mockito-all
 
 bindex-pkgs:\
 	org.osgi.service.indexer.impl,\

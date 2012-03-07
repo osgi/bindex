@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +21,10 @@ import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.indexer.impl.types.TypedAttribute;
+import org.osgi.service.indexer.impl.util.AddOnlyList;
 import org.osgi.service.indexer.impl.util.Pair;
 import org.osgi.service.indexer.impl.util.Tag;
+import org.osgi.service.log.LogService;
 
 public class BIndex2 implements ResourceIndexer {
 	
@@ -30,6 +33,8 @@ public class BIndex2 implements ResourceIndexer {
 	private final BundleAnalyzer bundleAnalyzer = new BundleAnalyzer();
 	private final List<Pair<ResourceAnalyzer, Filter>> analyzers = new LinkedList<Pair<ResourceAnalyzer,Filter>>();
 	
+	private LogService log;
+	
 	public BIndex2() {
 		try {
 			addAnalyzer(bundleAnalyzer, createFilter("(name=*.jar)"));
@@ -37,6 +42,14 @@ public class BIndex2 implements ResourceIndexer {
 			// Can't happen...?
 			throw new RuntimeException("Unexpected internal error compiling filter");
 		}
+	}
+	
+	public synchronized LogService getLog() {
+		return log;
+	}
+	
+	public synchronized void setLog(LogService log) {
+		this.log = log;
 	}
 	
 	public final void addAnalyzer(ResourceAnalyzer analyzer, Filter filter) {
@@ -94,8 +107,8 @@ public class BIndex2 implements ResourceIndexer {
 	private Tag generateResource(File file, Map<String, String> config) throws Exception {
 		
 		JarResource resource = new JarResource(file);
-		List<Capability> caps = new LinkedList<Capability>();
-		List<Requirement> reqs = new LinkedList<Requirement>();
+		List<Capability> caps = new AddOnlyList<Capability>(new LinkedList<Capability>());
+		List<Requirement> reqs = new AddOnlyList<Requirement>(new LinkedList<Requirement>());
 		
 		// Read config settings and save in thread local state
 		if (config != null) {
@@ -120,7 +133,11 @@ public class BIndex2 implements ResourceIndexer {
 					Filter filter = entry.getSecond();
 					
 					if (filter == null || filter.match(resource.getProperties())) {
-						analyzer.analyzeResource(resource, caps, reqs);
+						try {
+							analyzer.analyzeResource(resource, caps, reqs);
+						} catch (Exception e) {
+							log(LogService.LOG_ERROR, MessageFormat.format("Error calling analyzer \"{0}\" on resource {1}.", analyzer.getClass().getName(), resource.getLocation()), e);
+						}
 					}
 				}
 			}
@@ -149,8 +166,14 @@ public class BIndex2 implements ResourceIndexer {
 		
 		return resourceTag;
 	}
+
+	private void log(int level, String message, Throwable t) {
+		LogService log = getLog();
+		if (log != null)
+			log.log(level, message, t);
+	}
 	
-	static void appendAttributeAndDirectiveTags(Tag parentTag, Map<String, Object> attribs, Map<String, String> directives) {
+	private static void appendAttributeAndDirectiveTags(Tag parentTag, Map<String, Object> attribs, Map<String, String> directives) {
 		for (Entry<String, Object> attribEntry : attribs.entrySet()) {
 			Tag attribTag = new Tag(Schema.ELEM_ATTRIBUTE);
 			attribTag.addAttribute(Schema.ATTR_NAME, attribEntry.getKey());

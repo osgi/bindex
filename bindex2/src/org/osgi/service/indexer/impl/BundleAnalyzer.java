@@ -29,7 +29,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 	
 	private final ThreadLocal<GeneratorState> state = new ThreadLocal<GeneratorState>();
 
-	public void analyzeResource(Resource resource, List<? super Capability> capabilities, List<? super Requirement> requirements) throws Exception {
+	public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
 		doIdentity(resource, capabilities);
 		doContent(resource, capabilities);
 		doBundleAndHost(resource, capabilities);

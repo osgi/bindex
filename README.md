@@ -164,8 +164,8 @@ The `ResourceAnalyzer` interfaces defines a single method `analyzeResource`:
 	public interface ResourceAnalyzer {
 		static final String FILTER = "filter";
 		void analyzeResource(Resource resource,
-				List<? super Capability> capabilties,
-				List<? super Requirement> requirements) throws Exception;
+				List<Capability> capabilities,
+				List<Requirement> requirements) throws Exception;
 	}
 
 The `analyzeResource` method takes a `Resource` object and the lists of already discovered Requirements and Capabilities. An analyzer is permitted to add zero to many of each but it must not remove or alter any existing entries. A `Builder` class is provided as a convenience for constructing instances of Capability and Requirement.
@@ -194,8 +194,8 @@ The following example shows an analyzer for a custom extender header, `Help-Docs
 
 	public class HelpExtenderAnalyzer {
 		public void analyzeResource(Resource resource,
-									List<? super Capability> caps,
-									List<? super Requirement> reqs) {
+									List<Capability> caps,
+									List<Requirement> reqs) {
 
 			// Ignore this resource if no META-INF/MANIFEST.MF
 			// or Help-Docs header

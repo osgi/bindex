@@ -17,6 +17,8 @@ public class Activator implements BundleActivator {
 		logTracker.open();
 
 		BIndex2 indexer = new BIndex2();
+		indexer.setLog(logTracker);
+		
 		analyzerTracker = new AnalyzerTracker(context, indexer, logTracker);
 		analyzerTracker.open();
 

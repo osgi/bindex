@@ -6,14 +6,22 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import static org.mockito.Mockito.*;
+
+import org.mockito.ArgumentCaptor;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.indexer.Capability;
+import org.osgi.service.indexer.Requirement;
+import org.osgi.service.indexer.Resource;
+import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
-import org.osgi.service.indexer.impl.BIndex2;
+import org.osgi.service.log.LogService;
 
 public class TestIndexer extends TestCase {
 	
@@ -157,19 +165,63 @@ public class TestIndexer extends TestCase {
 		assertEquals(expected, writer.toString().trim());
 	}
 
+	public void testLogErrorsFromAnalyzer() throws Exception {
+		ResourceAnalyzer badAnalyzer = new ResourceAnalyzer() {
+			public void analyzeResource(Resource resource, List<Capability> capabilities, List<Requirement> requirements) throws Exception {
+				throw new Exception("Bang!");
+			}
+		};
+		ResourceAnalyzer goodAnalyzer = mock(ResourceAnalyzer.class);
+		
+		BIndex2 indexer = new BIndex2();
+		indexer.addAnalyzer(badAnalyzer, null);
+		indexer.addAnalyzer(goodAnalyzer, null);
+		
+		LogService log = mock(LogService.class);
+		indexer.setLog(log);
+		
+		// Run the indexer
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
+		StringWriter writer = new StringWriter();
+		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
+		
+		// The "good" analyzer should have been called
+		verify(goodAnalyzer).analyzeResource(any(Resource.class), anyListOf(Capability.class), anyListOf(Requirement.class));
+		
+		// The log service should have been notified about the exception
+		ArgumentCaptor<Exception> exceptionCaptor = ArgumentCaptor.forClass(Exception.class);
+		verify(log).log(eq(LogService.LOG_ERROR), any(String.class), exceptionCaptor.capture());
+		assertEquals("Bang!", exceptionCaptor.getValue().getMessage());
+	}
+	
 	public void testBundleOutsideRootDirectory() throws Exception {
 		BIndex2 indexer = new BIndex2();
+		LogService log = mock(LogService.class);
+		indexer.setLog(log);
 		
 		Map<String, String> props = new HashMap<String, String>();
 		props.put(ResourceIndexer.ROOT_URL, new File("testdata/subdir").getAbsoluteFile().toURI().toURL().toString());
 		
 		StringWriter writer = new StringWriter();
-		try {
-			indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
-			fail("Should have thrown IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			// expected
-		}
+		indexer.indexFragment(Collections.singleton(new File("testdata/01-bsn+version.jar")), writer, props);
+		
+		verify(log).log(eq(LogService.LOG_ERROR), anyString(), isA(IllegalArgumentException.class));
+	}
+	
+	public void testRemoveDisallowed() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		indexer.addAnalyzer(new NaughtyAnalyzer(), null);
+		LogService log = mock(LogService.class);
+		indexer.setLog(log);
+		
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(ResourceIndexer.ROOT_URL, new File("testdata").getAbsoluteFile().toURI().toURL().toString());
+		
+		StringWriter writer = new StringWriter();
+		indexer.indexFragment(Collections.singleton(new File("testdata/subdir/01-bsn+version.jar")), writer, props);
+		
+		verify(log).log(eq(LogService.LOG_ERROR), anyString(), isA(UnsupportedOperationException.class));
 	}
 
 }
