@@ -10,7 +10,9 @@ public class Activator implements BundleActivator {
 
 	private LogTracker logTracker;
 	private AnalyzerTracker analyzerTracker;
-	private ServiceRegistration<ResourceIndexer> registration;
+	
+	@SuppressWarnings("rawtypes")
+	private ServiceRegistration registration;
 
 	public void start(BundleContext context) throws Exception {
 		logTracker = new LogTracker(context);
