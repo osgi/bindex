@@ -14,6 +14,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.osgi.service.indexer.Builder;
 import org.osgi.service.indexer.Capability;
+import org.osgi.service.indexer.Namespaces;
 import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.ResourceAnalyzer;
@@ -59,10 +60,10 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		Version version = getVersion(resource);
 		
 		Builder builder = new Builder()
-				.addAttribute(Namespaces.ATTR_TYPE, identity)
+				.setNamespace(Namespaces.NS_IDENTITY)
 				.addAttribute(Namespaces.NS_IDENTITY, bsn.getName())
-				.addAttribute(Namespaces.ATTR_VERSION, version)
-				.setNamespace(Namespaces.NS_IDENTITY);
+				.addAttribute(Namespaces.ATTR_IDENTITY_TYPE, identity)
+				.addAttribute(Namespaces.ATTR_VERSION, version);
 		if (singleton)
 			builder.addDirective(Namespaces.DIRECTIVE_SINGLETON, Boolean.TRUE.toString());
 		caps.add(builder.buildCapability());
@@ -110,7 +111,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		builder.addAttribute(Namespaces.NS_CONTENT, location);
 
 		long size = resource.getSize();
-		if (size > 0L) builder.addAttribute(Namespaces.ATTR_SIZE, size);
+		if (size > 0L) builder.addAttribute(Namespaces.ATTR_CONTENT_SIZE, size);
 		
 		Manifest manifest = resource.getManifest();
 		if (manifest != null) {
@@ -119,7 +120,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			Properties localStrings = loadLocalStrings(resource);
 			String bundleName = translate(attribs.getValue(Constants.BUNDLE_NAME), localStrings);
 			if (bundleName != null)
-				builder.addAttribute(Namespaces.ATTR_DESCRIPTION, bundleName);
+				builder.addAttribute(Namespaces.ATTR_CONTENT_DESCRIPTION, bundleName);
 		}
 
 		capabilities.add(builder.buildCapability());
@@ -384,7 +385,7 @@ class BundleAnalyzer implements ResourceAnalyzer {
 			Builder builder = new Builder()
 				.setNamespace(Namespaces.NS_WIRING_SERVICE)
 				.addDirective(Namespaces.DIRECTIVE_FILTER, filter.toString())
-				.addDirective(Namespaces.DIRECTIVE_RESOLUTION, Namespaces.RESOLUTION_DYNAMIC);
+				.addDirective(Namespaces.DIRECTIVE_EFFECTIVE, Namespaces.EFFECTIVE_ACTIVE);
 			reqs.add(builder.buildRequirement());
 		}
 	}

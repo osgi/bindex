@@ -18,7 +18,7 @@
     <attribute name='bundle-version' type='Version' value='0.0.0'/>
   </capability>
   <requirement namespace='osgi.wiring.service'>
-    <directive name='resolution' value='dynamic'/>
     <directive name='filter' value='(osgi.wiring.service=org.example.a.A)'/>
+    <directive name='effective' value='active'/>
   </requirement>
 </resource>

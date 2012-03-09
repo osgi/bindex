@@ -32,13 +32,37 @@ import de.kalpatec.pojosr.framework.launch.ClasspathScanner;
 import de.kalpatec.pojosr.framework.launch.PojoServiceRegistryFactory;
 
 public class Index {
+	
+	public static final String DEFAULT_FILENAME_UNCOMPRESSED = "index.xml";
+	public static final String DEFAULT_FILENAME_COMPRESSED = "index.xml" + ".gz";
+	
 	/**
-	 * Main entry. See -help for options.
+	 * Main entry point. See -help for options.
 	 * 
-	 * @param args commandline arguments
-	 * @throws Exception in case of error
+	 * @param args
+	 *            Program arguments
 	 */
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[]) {
+		try {
+			internalMain(args);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+
+		// We really need to ensure all non-daemon threads -- which may have been started by a bundle -- are terminated.
+		System.exit(0);
+	}
+	
+	/**
+	 * An internal entry point that does not call System.exit(). Mainly intended
+	 * for testing purposes.
+	 * 
+	 * @param args
+	 *            Program arguments.
+	 * @throws Exception
+	 */
+	public static void internalMain(String args[]) throws Exception {
 		printCopyright(System.err);
 		
 		// Configure PojoSR
@@ -49,18 +73,19 @@ public class Index {
 		Framework framework = new PojoServiceRegistryFactoryImpl().newFramework(pojoSrConfig);
 		framework.init();
 		framework.start();
+		System.out.println("Started framework");
 		
 		// Look for indexer and run index generation
 		ServiceTracker tracker = new ServiceTracker(framework.getBundleContext(), ResourceIndexer.class.getName(), null);
 		tracker.open();
-		ResourceIndexer index = (ResourceIndexer) tracker.waitForService(0);
+		ResourceIndexer index = (ResourceIndexer) tracker.waitForService(1000);
+		if (index == null)
+			throw new IllegalStateException("Timed out waiting for ResourceIndexer service.");
 		run(args, index);
-		
-		System.exit(0);
 	}
 
 	private static void run(String[] args, ResourceIndexer index) {
-		File output = new File("repository.xml");
+		File output = new File(DEFAULT_FILENAME_UNCOMPRESSED);
 		Set<File> fileList = new HashSet<File>();
 		Map<String, String> config = new HashMap<String, String>();
 		
