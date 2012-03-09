@@ -16,7 +16,7 @@
 package org.osgi.impl.bundle.bindex.cli;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,7 +123,7 @@ public class Index {
 		if (fileList.isEmpty())
 			printUsage();
 		else try {
-			index.index(fileList, new FileWriter(output), config);
+			index.index(fileList, new FileOutputStream(output), config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

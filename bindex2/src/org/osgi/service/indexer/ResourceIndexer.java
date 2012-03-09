@@ -17,6 +17,7 @@
 package org.osgi.service.indexer;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,8 @@ import java.util.Set;
  * representation by indexing resource capabilities and requirements.
  */
 public interface ResourceIndexer {
+
+	public static final String COMPRESS = "compress";
 
 	/** the default repository name */
 	public static final String REPOSITORYNAME_DEFAULT = "Untitled";
@@ -59,6 +62,7 @@ public interface ResourceIndexer {
 
 	public static final String VERBOSE = "verbose";
 
+
 	/**
 	 * Index a set of input files and write the Repository XML representation to
 	 * the given writer
@@ -66,13 +70,13 @@ public interface ResourceIndexer {
 	 * @param files
 	 *            a set of input files
 	 * @param out
-	 *            the Writer to write the OBR XML representation
+	 *            the OutputStream to write the OBR XML representation
 	 * @param config
 	 *            a set of optional parameters (use the interface constants as
 	 *            keys)
 	 * @throws Exception
 	 */
-	void index(Set<File> files, Writer out, Map<String, String> config) throws Exception;
+	void index(Set<File> files, OutputStream out, Map<String, String> config) throws Exception;
 
 	/**
 	 * Index a set of input files and write a Repository XML fragment to the

@@ -3,6 +3,7 @@ package org.osgi.service.indexer.impl;
 import static org.osgi.framework.FrameworkUtil.createFilter;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.zip.Deflater;
+import java.util.zip.GZIPOutputStream;
 
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
@@ -22,6 +25,7 @@ import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
 import org.osgi.service.indexer.impl.types.TypedAttribute;
 import org.osgi.service.indexer.impl.util.AddOnlyList;
+import org.osgi.service.indexer.impl.util.Indent;
 import org.osgi.service.indexer.impl.util.Pair;
 import org.osgi.service.indexer.impl.util.Tag;
 import org.osgi.service.log.LogService;
@@ -64,14 +68,18 @@ public class BIndex2 implements ResourceIndexer {
 		}
 	}
 
-	public void index(Set<File> files, Writer out, Map<String, String> config) throws Exception {
-		PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out : new PrintWriter(out);
-		
-		pw.print(Schema.XML_PROCESSING_INSTRUCTION);
-		
+	public void index(Set<File> files, OutputStream out, Map<String, String> config) throws Exception {
 		if (config == null)
 			config = new HashMap<String, String>(0);
 		
+		Indent indent = Indent.PRETTY;
+		if (config.get(ResourceIndexer.COMPRESS) != null) {
+			out = new GZIPOutputStream(out, Deflater.BEST_COMPRESSION);
+			indent = Indent.NONE;
+		}
+		PrintWriter pw = new PrintWriter(out);
+		
+		pw.print(Schema.XML_PROCESSING_INSTRUCTION);
 		Tag repoTag = new Tag(Schema.ELEM_REPOSITORY);
 		
 		String repoName = config.get(REPOSITORY_NAME);
@@ -86,21 +94,25 @@ public class BIndex2 implements ResourceIndexer {
 		
 		repoTag.addAttribute(Schema.ATTR_XML_NAMESPACE, Schema.NAMESPACE);
 		
-		repoTag.printOpen(0, pw, false);
+		repoTag.printOpen(indent, pw, false);
 		for (File file : files) {
 			Tag resourceTag = generateResource(file, config);
-			resourceTag.print(2, pw);
+			resourceTag.print(indent.next(), pw);
 		}
-		repoTag.printClose(0, pw);
+		repoTag.printClose(indent, pw);
 		pw.flush(); pw.close();
 	}
 
 	public void indexFragment(Set<File> files, Writer out, Map<String, String> config) throws Exception {
-		PrintWriter pw = (out instanceof PrintWriter) ? (PrintWriter) out : new PrintWriter(out);
+		PrintWriter pw;
+		if (out instanceof PrintWriter)
+			pw = (PrintWriter) out;
+		else
+			pw = new PrintWriter(out);
 		
 		for (File file : files) {
 			Tag resourceTag = generateResource(file, config);
-			resourceTag.print(0 , pw);
+			resourceTag.print(Indent.PRETTY, pw);
 		}
 	}
 	

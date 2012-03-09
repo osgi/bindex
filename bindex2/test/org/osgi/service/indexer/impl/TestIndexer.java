@@ -1,5 +1,9 @@
 package org.osgi.service.indexer.impl;
 
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringWriter;
@@ -11,8 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
-import static org.mockito.Mockito.*;
 
 import org.mockito.ArgumentCaptor;
 import org.osgi.framework.FrameworkUtil;
@@ -94,7 +96,7 @@ public class TestIndexer extends TestCase {
 	public void testFullIndex() throws Exception {
 		BIndex2 indexer = new BIndex2();
 		
-		StringWriter writer = new StringWriter();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Set<File> files = new LinkedHashSet<File>();
 		files.add(new File("testdata/03-export.jar"));
 		files.add(new File("testdata/06-requirebundle.jar"));
@@ -102,10 +104,28 @@ public class TestIndexer extends TestCase {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(BIndex2.REPOSITORY_INCREMENT_OVERRIDE, "0");
 		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
-		indexer.index(files, writer, config);
+		indexer.index(files, out, config);
 		
 		String expected = Utils.readStream(new FileInputStream("testdata/full-03+06.txt"));
-		assertEquals(expected, writer.toString());
+		assertEquals(expected, out.toString());
+	}
+	
+	public void testFullIndexCompressed() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Set<File> files = new LinkedHashSet<File>();
+		files.add(new File("testdata/03-export.jar"));
+		files.add(new File("testdata/06-requirebundle.jar"));
+		
+		Map<String, String> config = new HashMap<String, String>();
+		config.put(BIndex2.REPOSITORY_INCREMENT_OVERRIDE, "0");
+		config.put(ResourceIndexer.COMPRESS, Boolean.toString(true));
+		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
+		indexer.index(files, out, config);
+		
+		String expected = Utils.readStream(new FileInputStream("testdata/packed.txt"));
+		assertEquals(expected, Utils.decompress(out.toString()));
 	}
 	
 	

@@ -159,7 +159,7 @@ public class Tag {
 	 */
 	public String toString() {
 		StringWriter sw = new StringWriter();
-		print(0, new PrintWriter(sw));
+		print(Indent.NONE, new PrintWriter(sw));
 		return sw.toString();
 	}
 
@@ -200,7 +200,7 @@ public class Tag {
 	/**
 	 * Print the tag formatted to a PrintWriter.
 	 */
-	public void print(int indent, PrintWriter pw) {
+	public void print(Indent indent, PrintWriter pw) {
 		boolean empty = content.size() == 0;
 		
 		printOpen(indent, pw, empty);
@@ -210,9 +210,8 @@ public class Tag {
 		}
 	}
 	
-	public void printOpen(int indent, PrintWriter pw, boolean andClose) {
-		pw.print("\n");
-		spaces(pw, indent);
+	public void printOpen(Indent indent, PrintWriter pw, boolean andClose) {
+		indent.print(pw);
 		pw.print('<');
 		pw.print(name);
 
@@ -236,20 +235,20 @@ public class Tag {
 			pw.print('>');
 	}
 	
-	public void printContents(int indent, PrintWriter pw) {
+	public void printContents(Indent indent, PrintWriter pw) {
 		for (Object content : this.content) {
+			Indent nextIndent = indent.next();
 			if (content instanceof String) {
-				formatted(pw, indent + 2, 60, escape((String) content));
+				formatted(pw, nextIndent, 60, escape((String) content));
 			} else if (content instanceof Tag) {
 				Tag tag = (Tag) content;
-				tag.print(indent + 2, pw);
+				tag.print(nextIndent, pw);
 			}
 		}
 	}
 	
-	public void printClose(int indent, PrintWriter pw) {
-		pw.print("\n");
-		spaces(pw, indent);
+	public void printClose(Indent indent, PrintWriter pw) {
+		indent.print(pw);
 		pw.print("</");
 		pw.print(name);
 		pw.print('>');
@@ -259,15 +258,14 @@ public class Tag {
 	 * Convenience method to print a string nicely and does character conversion
 	 * to entities.
 	 */
-	void formatted(PrintWriter pw, int left, int width, String s) {
+	void formatted(PrintWriter pw, Indent indent, int width, String s) {
 		int pos = width + 1;
 		s = s.trim();
 
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			if (i == 0 || (Character.isWhitespace(c) && pos > width - 3)) {
-				pw.print("\n");
-				spaces(pw, left);
+				indent.print(pw);
 				pos = 0;
 			}
 			switch (c) {
@@ -322,11 +320,11 @@ public class Tag {
 
 	/**
 	 * Make spaces.
-	 */
 	void spaces(PrintWriter pw, int n) {
 		while (n-- > 0)
 			pw.print(' ');
 	}
+	 */
 
 	/**
 	 * root/preferences/native/os
