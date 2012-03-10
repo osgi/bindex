@@ -27,4 +27,11 @@ public class Requirement {
 		return Collections.unmodifiableMap(directives);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Requirement [namespace=").append(namespace).append(", attributes=").append(attributes).append(", directives=").append(directives).append("]");
+		return builder.toString();
+	}
+
 }

@@ -27,4 +27,11 @@ public class Capability {
 		return Collections.unmodifiableMap(directives);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Capability [namespace=").append(namespace).append(", attributes=").append(attributes).append(", directives=").append(directives).append("]");
+		return builder.toString();
+	}
+	
 }
