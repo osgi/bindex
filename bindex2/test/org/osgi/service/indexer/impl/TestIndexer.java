@@ -93,6 +93,22 @@ public class TestIndexer extends TestCase {
 		assertEquals(expected, writer.toString().trim());
 	}
 	
+	public void testEmptyIndex() throws Exception {
+		BIndex2 indexer = new BIndex2();
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		Set<File> files = Collections.emptySet();
+
+		Map<String, String> config = new HashMap<String, String>();
+		config.put(BIndex2.REPOSITORY_INCREMENT_OVERRIDE, "0");
+		config.put(ResourceIndexer.REPOSITORY_NAME, "empty");
+		config.put(ResourceIndexer.PRETTY, "true");
+		indexer.index(files, out, config);
+		
+		String expected = Utils.readStream(new FileInputStream("testdata/empty.txt"));
+		assertEquals(expected, out.toString());
+	}
+	
 	public void testFullIndex() throws Exception {
 		BIndex2 indexer = new BIndex2();
 		
