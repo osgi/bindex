@@ -132,7 +132,8 @@ public class Index {
 	private static void printUsage() {
 		System.err
 				.println("Arguments:\n" //
-						+ "  [-r repository.(xml|zip)]                                        --> Output file.\n" //
+						+ "  [-r index.xml(.gz)]                                              --> Output file name.\n" //
+						+ "  [--pretty                                                        --> Non-compressed, indented output.\n" //
 						+ "  [-n Untitled]                                                    --> Repository name.\n"
 						+ "  [-t \"%s\" symbolic name \"%v\" version \"%f\" filename \"%p\" dirpath ] --> Resource URL template.\n" //
 						+ "  [-d rootdir]                                                     --> Root directory.\n" //
