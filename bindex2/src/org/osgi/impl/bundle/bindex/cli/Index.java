@@ -44,7 +44,25 @@ public class Index {
 	 */
 	public static void main(String args[]) {
 		try {
-			internalMain(args);
+			printCopyright(System.err);
+			
+			// Configure PojoSR
+			Map<String, Object> pojoSrConfig = new HashMap<String, Object>();
+			pojoSrConfig.put(PojoServiceRegistryFactory.BUNDLE_DESCRIPTORS, new ClasspathScanner());
+			
+			// Start PojoSR 'framework'
+			Framework framework = new PojoServiceRegistryFactoryImpl().newFramework(pojoSrConfig);
+			framework.init();
+			framework.start();
+			
+			// Look for indexer and run index generation
+			ServiceTracker tracker = new ServiceTracker(framework.getBundleContext(), ResourceIndexer.class.getName(), null);
+			tracker.open();
+			ResourceIndexer index = (ResourceIndexer) tracker.waitForService(1000);
+			if (index == null)
+				throw new IllegalStateException("Timed out waiting for ResourceIndexer service.");
+			run(args, index);
+			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			System.exit(1);
@@ -54,38 +72,8 @@ public class Index {
 		System.exit(0);
 	}
 	
-	/**
-	 * An internal entry point that does not call System.exit(). Mainly intended
-	 * for testing purposes.
-	 * 
-	 * @param args
-	 *            Program arguments.
-	 * @throws Exception
-	 */
-	public static void internalMain(String args[]) throws Exception {
-		printCopyright(System.err);
-		
-		// Configure PojoSR
-		Map<String, Object> pojoSrConfig = new HashMap<String, Object>();
-		pojoSrConfig.put(PojoServiceRegistryFactory.BUNDLE_DESCRIPTORS, new ClasspathScanner());
-		
-		// Start PojoSR 'framework'
-		Framework framework = new PojoServiceRegistryFactoryImpl().newFramework(pojoSrConfig);
-		framework.init();
-		framework.start();
-		System.out.println("Started framework");
-		
-		// Look for indexer and run index generation
-		ServiceTracker tracker = new ServiceTracker(framework.getBundleContext(), ResourceIndexer.class.getName(), null);
-		tracker.open();
-		ResourceIndexer index = (ResourceIndexer) tracker.waitForService(1000);
-		if (index == null)
-			throw new IllegalStateException("Timed out waiting for ResourceIndexer service.");
-		run(args, index);
-	}
-
 	private static void run(String[] args, ResourceIndexer index) {
-		File output = new File(DEFAULT_FILENAME_UNCOMPRESSED);
+		File output = new File(DEFAULT_FILENAME_COMPRESSED);
 		Set<File> fileList = new HashSet<File>();
 		Map<String, String> config = new HashMap<String, String>();
 		
@@ -109,8 +97,15 @@ public class Index {
 				} else if (args[i].startsWith("-l")) {
 					String licenceUrl = args[++i];
 					config.put(ResourceIndexer.LICENSE_URL, licenceUrl);
+				} else if (args[i].equalsIgnoreCase("--pretty")) {
+					output = new File(DEFAULT_FILENAME_UNCOMPRESSED);
+					config.put(ResourceIndexer.PRETTY, Boolean.toString(true));
+				} else if(args[i].equalsIgnoreCase("--noincrement")) {
+					config.put("-repository.increment.override", "");
 				} else if (args[i].startsWith("-h")) {
 					printUsage();
+				} else if (args[i].startsWith("-")) {
+					throw new Exception("Unknown argument");
 				} else {
 					fileList.add(new File(args[i]));
 				}

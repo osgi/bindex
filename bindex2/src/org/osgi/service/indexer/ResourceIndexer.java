@@ -28,7 +28,8 @@ import java.util.Set;
  */
 public interface ResourceIndexer {
 
-	public static final String COMPRESS = "compress";
+	/** enable pretty-printing: non-gzipped, indented XML */
+	public static final String PRETTY = "pretty";
 
 	/** the default repository name */
 	public static final String REPOSITORYNAME_DEFAULT = "Untitled";

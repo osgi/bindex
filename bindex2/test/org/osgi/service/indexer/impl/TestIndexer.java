@@ -106,11 +106,11 @@ public class TestIndexer extends TestCase {
 		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
 		indexer.index(files, out, config);
 		
-		String expected = Utils.readStream(new FileInputStream("testdata/full-03+06.txt"));
-		assertEquals(expected, out.toString());
+		String expected = Utils.readStream(new FileInputStream("testdata/packed.txt"));
+		assertEquals(expected, Utils.decompress(out.toString()));
 	}
 	
-	public void testFullIndexCompressed() throws Exception {
+	public void testFullIndexPrettyPrint() throws Exception {
 		BIndex2 indexer = new BIndex2();
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -120,14 +120,13 @@ public class TestIndexer extends TestCase {
 		
 		Map<String, String> config = new HashMap<String, String>();
 		config.put(BIndex2.REPOSITORY_INCREMENT_OVERRIDE, "0");
-		config.put(ResourceIndexer.COMPRESS, Boolean.toString(true));
 		config.put(ResourceIndexer.REPOSITORY_NAME, "full-c+f");
+		config.put(ResourceIndexer.PRETTY, "true");
 		indexer.index(files, out, config);
 		
-		String expected = Utils.readStream(new FileInputStream("testdata/packed.txt"));
-		assertEquals(expected, Utils.decompress(out.toString()));
+		String expected = Utils.readStream(new FileInputStream("testdata/full-03+06.txt"));
+		assertEquals(expected, out.toString());
 	}
-	
 	
 	public void testAddAnalyzer() throws Exception {
 		BIndex2 indexer = new BIndex2();

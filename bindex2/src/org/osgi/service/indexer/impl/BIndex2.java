@@ -72,12 +72,15 @@ public class BIndex2 implements ResourceIndexer {
 		if (config == null)
 			config = new HashMap<String, String>(0);
 		
-		Indent indent = Indent.PRETTY;
-		if (config.get(ResourceIndexer.COMPRESS) != null) {
-			out = new GZIPOutputStream(out, Deflater.BEST_COMPRESSION);
+		Indent indent;
+		PrintWriter pw;
+		if (config.get(ResourceIndexer.PRETTY) != null) {
+			indent = Indent.PRETTY;
+			pw = new PrintWriter(out);
+		} else {
 			indent = Indent.NONE;
+			pw = new PrintWriter(new GZIPOutputStream(out, Deflater.BEST_COMPRESSION));
 		}
-		PrintWriter pw = new PrintWriter(out);
 		
 		pw.print(Schema.XML_PROCESSING_INSTRUCTION);
 		Tag repoTag = new Tag(Schema.ELEM_REPOSITORY);

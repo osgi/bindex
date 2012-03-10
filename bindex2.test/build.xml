@@ -11,7 +11,6 @@
 			<classpath>
 				<path location="${workspacedir}/cnf/buildrepo/junit.osgi/junit.osgi-3.8.2.jar"/>
 				<pathelement location="${project.output}" />
-				<!-- the test classes -->
 				<path location="${workspacedir}/bindex2/generated/bindex2.lib.jar" />
 			</classpath>
 			<formatter type="xml"/>
@@ -21,12 +20,10 @@
 		</junit>
 
 		<!-- CLI Tests -->
-		<junit fork="true" printsummary="true" dir="${target}" showoutput="true">
-			<!-- <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=9001,suspend=y"/> -->
+		<junit fork="false" printsummary="true" showoutput="true">
 			<classpath>
-				<path location="${workspacedir}/cnf/buildrepo/junit.osgi/junit.osgi-3.8.2.jar" />
+				<path location="${workspacedir}/cnf/buildrepo/junit.osgi/junit.osgi-3.8.2.jar"/>
 				<pathelement location="${project.output}" />
-				<pathelement location="${workspacedir}/bindex2/generated/bindex2.cli.jar" />
 			</classpath>
 			<formatter type="xml" />
 			<batchtest todir="${target}/test-reports">
