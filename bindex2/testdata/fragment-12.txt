@@ -5,8 +5,8 @@
     <attribute name='version' type='Version' value='0.0.0'/>
   </capability>
   <capability namespace='osgi.content'>
-    <attribute name='osgi.content' value='testdata/12-nofragments.jar'/>
-    <attribute name='description' value='org.example.l'/>
+    <attribute name='osgi.content' value='ac0caea013b4e876a5c880c1ff9c75aa9bed9d2290180b18864efe66a9625274'/>
+    <attribute name='url' value='testdata/12-nofragments.jar'/>
     <attribute name='size' type='Long' value='1119'/>
   </capability>
   <capability namespace='osgi.wiring.bundle'>

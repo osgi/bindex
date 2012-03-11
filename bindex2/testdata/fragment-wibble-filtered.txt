@@ -5,8 +5,8 @@
     <attribute name='version' type='Version' value='0.0.0'/>
   </capability>
   <capability namespace='osgi.content'>
-    <attribute name='osgi.content' value='testdata/01-bsn+version.jar'/>
-    <attribute name='description' value='Example Bundle A'/>
+    <attribute name='osgi.content' value='64f661eea43334dc5d38d7f16dbcacd02c799e68332b40e72da8021828e3329c'/>
+    <attribute name='url' value='testdata/01-bsn+version.jar'/>
     <attribute name='size' type='Long' value='1104'/>
   </capability>
   <capability namespace='osgi.wiring.bundle'>
@@ -26,8 +26,8 @@
     <attribute name='version' type='Version' value='0.0.0'/>
   </capability>
   <capability namespace='osgi.content'>
-    <attribute name='osgi.content' value='testdata/02-localization.jar'/>
-    <attribute name='description' value='Example Bundle B'/>
+    <attribute name='osgi.content' value='67d366b7705690f65e0efca396d0862d33874a9ddd64672390593694ce77bef2'/>
+    <attribute name='url' value='testdata/02-localization.jar'/>
     <attribute name='size' type='Long' value='1544'/>
   </capability>
   <capability namespace='osgi.wiring.bundle'>

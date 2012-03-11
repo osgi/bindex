@@ -33,32 +33,9 @@ public class TestBundleAnalyzer extends TestCase {
 		
 		Capability content = caps.get(1);
 		assertEquals("osgi.content", content.getNamespace());
-		assertEquals("testdata/01-bsn+version.jar", content.getAttributes().get("osgi.content"));
+		assertEquals("64f661eea43334dc5d38d7f16dbcacd02c799e68332b40e72da8021828e3329c", content.getAttributes().get("osgi.content"));
+		assertEquals("testdata/01-bsn+version.jar", content.getAttributes().get("url"));
 		assertEquals(1104L, content.getAttributes().get("size"));
-	}
-	
-	public void testDescription() throws Exception {
-		BundleAnalyzer a = new BundleAnalyzer();
-		LinkedList<Capability> caps = new LinkedList<Capability>();
-		LinkedList<Requirement> reqs = new LinkedList<Requirement>();
-		
-		a.analyzeResource(new JarResource(new File("testdata/01-bsn+version.jar")), caps, reqs);
-		
-		
-		String desc = (String) findCaps("osgi.content", caps).get(0).getAttributes().get("description");
-		
-		assertEquals("Example Bundle A", desc);
-	}
-	
-	public void testDescriptionTranslated() throws Exception {
-		BundleAnalyzer a = new BundleAnalyzer();
-		LinkedList<Capability> caps = new LinkedList<Capability>();
-		LinkedList<Requirement> reqs = new LinkedList<Requirement>();
-		
-		a.analyzeResource(new JarResource(new File("testdata/02-localization.jar")), caps, reqs);
-		
-		String desc = (String) findCaps("osgi.content", caps).get(0).getAttributes().get("description");
-		assertEquals("Example Bundle B", desc);
 	}
 	
 	public void testPackageExports() throws Exception {

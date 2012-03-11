@@ -1,3 +1,4 @@
+* Effective directive
 * Tests for config settings:
 	* repo name
 	* stylesheet

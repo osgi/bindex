@@ -5,8 +5,8 @@
     <attribute name='version' type='Version' value='0.0.0'/>
   </capability>
   <capability namespace='osgi.content'>
-    <attribute name='osgi.content' value='testdata/05-import.jar'/>
-    <attribute name='description' value='org.example.e'/>
+    <attribute name='osgi.content' value='0304c93ef2bbc862ef9b4d847eff83cbddae2f2a3ac16d5aebc2156b6750cc7b'/>
+    <attribute name='url' value='testdata/05-import.jar'/>
     <attribute name='size' type='Long' value='972'/>
   </capability>
   <capability namespace='osgi.wiring.bundle'>

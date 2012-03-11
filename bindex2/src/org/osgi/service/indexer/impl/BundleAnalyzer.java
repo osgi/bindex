@@ -2,6 +2,9 @@ package org.osgi.service.indexer.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +25,14 @@ import org.osgi.service.indexer.impl.types.ScalarType;
 import org.osgi.service.indexer.impl.types.SymbolicName;
 import org.osgi.service.indexer.impl.types.VersionKey;
 import org.osgi.service.indexer.impl.types.VersionRange;
+import org.osgi.service.indexer.impl.util.Hex;
 import org.osgi.service.indexer.impl.util.OSGiHeader;
 import org.osgi.service.indexer.impl.util.QuotedTokenizer;
 import org.osgi.service.indexer.impl.util.Yield;
 
 class BundleAnalyzer implements ResourceAnalyzer {
+	
+	private static final String SHA_256 = "SHA-256";
 	
 	private final ThreadLocal<GeneratorState> state = new ThreadLocal<GeneratorState>();
 
@@ -107,25 +113,39 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		Builder builder = new Builder()
 			.setNamespace(Namespaces.NS_CONTENT);
 		
+		String sha = calculateSHA(resource);
+		builder.addAttribute(Namespaces.NS_CONTENT, sha);
+		
 		String location = calculateLocation(resource);
-		builder.addAttribute(Namespaces.NS_CONTENT, location);
+		builder.addAttribute(Namespaces.ATTR_CONTENT_URL, location);
 
 		long size = resource.getSize();
 		if (size > 0L) builder.addAttribute(Namespaces.ATTR_CONTENT_SIZE, size);
 		
-		Manifest manifest = resource.getManifest();
-		if (manifest != null) {
-			Attributes attribs = manifest.getMainAttributes();
-			
-			Properties localStrings = loadLocalStrings(resource);
-			String bundleName = translate(attribs.getValue(Constants.BUNDLE_NAME), localStrings);
-			if (bundleName != null)
-				builder.addAttribute(Namespaces.ATTR_CONTENT_DESCRIPTION, bundleName);
-		}
-
 		capabilities.add(builder.buildCapability());
 	}
 	
+	private String calculateSHA(Resource resource) throws IOException, NoSuchAlgorithmException {
+		MessageDigest digest = MessageDigest.getInstance(SHA_256);
+		byte[] buf = new byte[1024];
+		
+		InputStream stream = null;
+		try {
+			stream = resource.getStream();
+			while (true) {
+				int bytesRead = stream.read(buf, 0, 1024);
+				if (bytesRead < 0)
+					break;
+				
+				digest.update(buf, 0, bytesRead);
+			}
+		} finally {
+			if (stream != null) stream.close();
+		}
+		
+		return Hex.toHexString(digest.digest());
+	}
+
 	private String calculateLocation(Resource resource) throws IOException {
 		String location = resource.getLocation();
 		

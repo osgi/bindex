@@ -1,6 +1,7 @@
 package org.osgi.service.indexer.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ class JarResource implements Resource {
 
 	public JarResource(File file) throws IOException {
 		this.file = file;
+		
 		this.location = file.getPath();
 		this.jarFile = new JarFile(file);
 		
@@ -92,8 +94,7 @@ class JarResource implements Resource {
 	}
 
 	public InputStream getStream() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return new FileInputStream(file);
 	}
 
 	public Manifest getManifest() throws IOException {

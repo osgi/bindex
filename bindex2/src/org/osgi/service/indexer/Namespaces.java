@@ -27,7 +27,6 @@ public final class Namespaces {
 	public static final String ATTR_CONTENT_URL = "url";
 	public static final String ATTR_CONTENT_SIZE = "size";
 	public static final String ATTR_CONTENT_MIME = "mime";
-	public static final String ATTR_CONTENT_DESCRIPTION = "description";
 	
 	// Common directives
 	public static final String DIRECTIVE_FILTER = "filter";
