@@ -292,13 +292,17 @@ public class RepositoryImpl implements Repository {
 
 				if (url.getPath().endsWith(".zip")) {
 					ZipInputStream zin = new ZipInputStream(url.openStream());
-					ZipEntry entry = zin.getNextEntry();
-					while (entry != null) {
-						if (entry.getName().equals("repository.xml")) {
-							in = zin;
-							break;
+					try {
+						ZipEntry entry = zin.getNextEntry();
+						while (entry != null) {
+							if (entry.getName().equals("repository.xml")) {
+								in = zin;
+								break;
+							}
+							entry = zin.getNextEntry();
 						}
-						entry = zin.getNextEntry();
+					} finally {
+						zin.close();
 					}
 				} else {
 					in = url.openStream();
