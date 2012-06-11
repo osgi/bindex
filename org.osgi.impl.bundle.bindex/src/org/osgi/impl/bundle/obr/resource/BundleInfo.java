@@ -215,15 +215,18 @@ public class BundleInfo {
 				ri.setFilter(createServiceFilter(entry));
 				ri.setComment("Import Service " + entry.getName());
 
-				if (entry.directives != null
-						&& "optional".equalsIgnoreCase((String) entry.directives
-								.get("availability"))) {
-					ri.setOptional(true);
-				}
-				else {
-					ri.setOptional(false);
-				}
+				ri.setOptional(false);
 				ri.setMultiple(true);
+				if (entry.directives != null) {
+					if ("optional".equalsIgnoreCase((String) entry.directives
+								.get("availability"))) {
+						ri.setOptional(true);
+					}
+					if ("false".equalsIgnoreCase((String) entry.directives
+								.get("multiple"))) {
+						ri.setMultiple(false);
+					}					
+				}
 				resource.addRequirement(ri);
 			}
 		}
