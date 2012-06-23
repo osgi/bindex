@@ -1,4 +1,4 @@
 -nobundles
 -dependson:\
-	bindex2,\
-	bindex2.test
+	org.osgi.impl.bundle.bindex2.cli,\
+	org.osgi.impl.bundle.bindex2.test
