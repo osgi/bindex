@@ -1,2 +1,5 @@
 /.metadata/
 *.swp
+/*/generated/
+/*/bin/
+/*/bin_test/
