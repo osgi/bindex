@@ -1,2 +1,505 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<repository name='Local' lastmodified='0' xmlns='http://www.osgi.org/xmlns/obr/v1.0.0'/>
+<?xml version='1.0' encoding='utf-8'?>
+<?xml-stylesheet type='text/xsl' href='http://www.osgi.org/www/obr2html.xsl'?>
+
+<repository lastmodified='20120630220210.758' name='Local'>
+  <resource id='biz.aQute.bnd.annotation/1.52.3' presentationname='bnd Annotations Library' symbolicname='biz.aQute.bnd.annotation' uri='biz.aQute.bnd.annotation/biz.aQute.bnd.annotation-1.52.3.jar' version='1.52.3'>
+    <description>
+      Contains only the annotations for bnd.
+    </description>
+    <size>
+      29513
+    </size>
+    <license>
+      http://www.opensource.org/licenses/apache2.0.php; description="All
+       files contained in this JAR are licensed under the Apache
+       2.0 license, unless noted differently in their source (see
+       swing2swt)."; link=LICENSE
+    </license>
+    <documentation>
+      http://www.aQute.biz/Code/Bnd
+    </documentation>
+    <copyright>
+      All files contained in this JAR are licensed under the Apache
+       2.0 license, unless noted differently in their source (see
+       swing2swt).
+    </copyright>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='bnd Annotations Library'/>
+      <p n='symbolicname' v='biz.aQute.bnd.annotation'/>
+      <p n='version' t='version' v='1.52.3'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='aQute.bnd.annotation'/>
+      <p n='version' t='version' v='1.43.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='aQute.bnd.annotation.component'/>
+      <p n='version' t='version' v='1.43.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='aQute.bnd.annotation.metatype'/>
+      <p n='version' t='version' v='1.43.1'/>
+    </capability>
+  </resource>
+  <resource id='org.mockito.mockito-all/1.8.5' presentationname='Mockito Mock Library for Java. Hamcrest-core &amp; Objenesis included in the bundle.' symbolicname='org.mockito.mockito-all' uri='org.mockito.mockito-all/org.mockito.mockito-all-1.8.5.jar' version='1.8.5'>
+    <size>
+      1439463
+    </size>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='Mockito Mock Library for Java. Hamcrest-core &amp; Objenesis included in the bundle.'/>
+      <p n='symbolicname' v='org.mockito.mockito-all'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.exceptions.base'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.stubbing'/>
+      <p n='uses' v='org.mockito.invocation'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.exceptions.verification.junit'/>
+      <p n='uses' v='junit.framework,org.mockito.exceptions.verification'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.exceptions.misusing'/>
+      <p n='uses' v='org.mockito.exceptions.base'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.invocation'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.runners'/>
+      <p n='uses' v='org.junit.runner,org.junit.runner.notification,org.junit.runner.manipulation'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.verification'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito'/>
+      <p n='uses' v='org.hamcrest,org.mockito.stubbing,org.mockito.verification,org.mockito.exceptions.base,org.mockito.exceptions,org.mockito.configuration,org.mockito.invocation'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.exceptions'/>
+      <p n='uses' v='org.mockito.exceptions.verification.junit,org.mockito.exceptions.base,org.mockito.exceptions.verification,org.mockito.exceptions.misusing'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.configuration'/>
+      <p n='uses' v='org.mockito,org.mockito.stubbing'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.stubbing.answers'/>
+      <p n='uses' v='org.mockito.exceptions.base,org.mockito.stubbing,org.mockito.invocation'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.mockito.exceptions.verification'/>
+      <p n='uses' v='org.mockito.exceptions.base'/>
+      <p n='version' t='version' v='1.8.5'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.hamcrest'/>
+      <p n='uses' v='org.hamcrest.core'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.hamcrest.core'/>
+      <p n='uses' v='org.hamcrest'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.objenesis'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=COM.jrockit.reflect)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package COM.jrockit.reflect
+    </require>
+    <require extend='false' filter='(&amp;(package=jrockit.vm)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package jrockit.vm
+    </require>
+    <require extend='false' filter='(&amp;(package=junit.framework)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package junit.framework
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.tools.ant)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.tools.ant
+    </require>
+    <require extend='false' filter='(&amp;(package=org.apache.tools.ant.types)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.apache.tools.ant.types
+    </require>
+    <require extend='false' filter='(&amp;(package=org.hamcrest)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.hamcrest ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.internal.runners)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.internal.runners
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runner)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runner
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runner.manipulation)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runner.manipulation
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runner.notification)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runner.notification
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runners)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runners
+    </require>
+    <require extend='false' filter='(&amp;(package=org.junit.runners.model)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package org.junit.runners.model
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.configuration)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.configuration ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.exceptions)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.exceptions ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.exceptions.base)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.exceptions.base ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.exceptions.misusing)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.exceptions.misusing ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.exceptions.verification)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.exceptions.verification ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.exceptions.verification.junit)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.exceptions.verification.junit ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.invocation)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.invocation ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.runners)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.runners ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.stubbing)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.stubbing ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.stubbing.answers)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.stubbing.answers ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.mockito.verification)(version&gt;=1.8.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.mockito.verification ;version=[1.8.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.objenesis)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='false'>
+      Import package org.objenesis ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=sun.reflect)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package sun.reflect
+    </require>
+  </resource>
+  <resource id='osgi.cmpn/4.2.0.200908310645' presentationname='osgi.cmpn' symbolicname='osgi.cmpn' uri='osgi.cmpn/osgi.cmpn-4.2.0.jar' version='4.2.0.200908310645'>
+    <description>
+      OSGi Service Platform Release 4 Version 4.2, Compendium Interfaces
+       and Classes for use in compiling bundles.
+    </description>
+    <size>
+      614272
+    </size>
+    <license>
+      http://opensource.org/licenses/apache2.0.php; link="http://www.apache.org/licenses/LICENSE-2.0";
+       description="Apache License, Version 2.0"
+    </license>
+    <copyright>
+      Copyright (c) OSGi Alliance (2000, 2009). All Rights Reserved.
+    </copyright>
+    <capability name='bundle'>
+      <p n='manifestversion' v='2'/>
+      <p n='presentationname' v='osgi.cmpn'/>
+      <p n='symbolicname' v='osgi.cmpn'/>
+      <p n='version' t='version' v='4.2.0.200908310645'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree.spi'/>
+      <p n='uses' v='info.dmtree'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree.registry'/>
+      <p n='uses' v='org.osgi.framework,info.dmtree,info.dmtree.notification'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree.notification.spi'/>
+      <p n='uses' v='info.dmtree.notification'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree.security'/>
+      <p n='uses' v='info.dmtree'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='info.dmtree.notification'/>
+      <p n='uses' v='info.dmtree'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.application'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.application'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.blueprint.container'/>
+      <p n='uses' v='org.osgi.service.blueprint.reflect,org.osgi.framework'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.blueprint.reflect'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.cm'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.3.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.component'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.deploymentadmin.spi'/>
+      <p n='uses' v='org.osgi.service.deploymentadmin,org.osgi.framework'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.deploymentadmin'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.device'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.event'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.2.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.http'/>
+      <p n='uses' v='javax.servlet.http,javax.servlet'/>
+      <p n='version' t='version' v='1.2.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.io'/>
+      <p n='uses' v='javax.microedition.io'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.log'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.3.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.metatype'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.monitor'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.prefs'/>
+      <p n='version' t='version' v='1.1.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.provisioning'/>
+      <p n='version' t='version' v='1.2.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.upnp'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.useradmin'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.1.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.service.wireadmin'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.measurement'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.position'/>
+      <p n='uses' v='org.osgi.util.measurement'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.cdma'/>
+      <p n='uses' v='org.osgi.framework,org.osgi.service.condpermadmin'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.gsm'/>
+      <p n='uses' v='org.osgi.framework,org.osgi.service.condpermadmin'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.mobile'/>
+      <p n='uses' v='org.osgi.framework,org.osgi.service.condpermadmin'/>
+      <p n='version' t='version' v='1.0.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.tracker'/>
+      <p n='uses' v='org.osgi.framework'/>
+      <p n='version' t='version' v='1.4.0'/>
+    </capability>
+    <capability name='package'>
+      <p n='package' v='org.osgi.util.xml'/>
+      <p n='uses' v='javax.xml.parsers,org.osgi.framework'/>
+      <p n='version' t='version' v='1.0.1'/>
+    </capability>
+    <require extend='false' filter='(&amp;(package=info.dmtree)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=info.dmtree.notification)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree.notification ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=info.dmtree.notification.spi)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree.notification.spi ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=info.dmtree.registry)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree.registry ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=info.dmtree.security)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree.security ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=info.dmtree.spi)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package info.dmtree.spi ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.microedition.io)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.microedition.io
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.servlet.http)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.servlet.http
+    </require>
+    <require extend='false' filter='(&amp;(package=javax.xml.parsers)(version&gt;=0.0.0))' multiple='false' name='package' optional='true'>
+      Import package javax.xml.parsers
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.application)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.application ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.framework)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.framework ;version=[1.5.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.application)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.application ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.blueprint.container)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.blueprint.container ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.blueprint.reflect)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.blueprint.reflect ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.cm)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.cm ;version=[1.3.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.component)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.component ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.condpermadmin)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.condpermadmin ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.deploymentadmin)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.deploymentadmin ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.deploymentadmin.spi)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.deploymentadmin.spi ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.device)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.device ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.event)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.event ;version=[1.2.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.http)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.http ;version=[1.2.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.io)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.io ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.log)(version&gt;=1.3.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.log ;version=[1.3.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.metatype)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.metatype ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.monitor)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.monitor ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.prefs)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.prefs ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.provisioning)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.provisioning ;version=[1.2.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.upnp)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.upnp ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.useradmin)(version&gt;=1.1.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.useradmin ;version=[1.1.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.service.wireadmin)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.service.wireadmin ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.cdma)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.cdma ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.gsm)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.gsm ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.measurement)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.measurement ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.mobile)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.mobile ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.position)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.position ;version=[1.0.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.tracker)(version&gt;=1.4.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.tracker ;version=[1.4.0,2.0.0)
+    </require>
+    <require extend='false' filter='(&amp;(package=org.osgi.util.xml)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))' multiple='false' name='package' optional='true'>
+      Import package org.osgi.util.xml ;version=[1.0.0,2.0.0)
+    </require>
+  </resource>
+</repository>
