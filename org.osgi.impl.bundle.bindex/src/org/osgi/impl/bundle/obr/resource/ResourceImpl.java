@@ -16,12 +16,14 @@
 package org.osgi.impl.bundle.obr.resource;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -215,16 +217,57 @@ public class ResourceImpl implements Resource {
 		return url;
 	}
 
+	static final String FILE_PROTOCOL = "file";
+
+	static class ReducedURL {
+		public LinkedList<String> protocols = new LinkedList<String>();
+		public String urlFile = null;
+	}
+
+	static ReducedURL reduceURL(URL url) {
+		ReducedURL reducedURL = new ReducedURL();
+
+		String urlProtocol = url.getProtocol();
+		String urlFile = url.getFile();
+		while (urlProtocol != null) {
+			reducedURL.protocols.add(urlProtocol);
+			try {
+				URL url1 = new URL(urlFile);
+				urlProtocol = url1.getProtocol();
+				urlFile = url1.getFile();
+			} catch (MalformedURLException e) {
+				urlProtocol = null;
+			}
+		}
+		reducedURL.urlFile = urlFile;
+
+		return reducedURL;
+	}
+
 	static String makeRelative(URL repository, URL url) {
 		try {
 			if (repository != null) {
-				String a = url.toExternalForm();
-				String b = repository.toExternalForm();
-				int index = b.lastIndexOf('/');
-				if (index > 0)
-					b = b.substring(0, index + 1);
-				if (a.startsWith(b))
-					return a.substring(b.length());
+				ReducedURL reducedRepository = reduceURL(repository);
+				ReducedURL reducedUrl = reduceURL(url);
+
+				if (FILE_PROTOCOL.equals(reducedRepository.protocols.getLast())
+						&& FILE_PROTOCOL.equals(reducedUrl.protocols.getLast())) {
+					if (reducedUrl.urlFile
+							.startsWith(reducedRepository.urlFile)) {
+						String result = reducedUrl.urlFile
+								.substring(reducedRepository.urlFile.length());
+						while (result.startsWith("/")) {
+							result = result.substring(1);
+						}
+						String protos = "";
+						for (String p : reducedUrl.protocols) {
+							protos = protos.concat(p).concat(":");
+						}
+						return protos.concat(result);
+					}
+
+				}
+
 			}
 		} catch (Exception e) {
 			// Ignore

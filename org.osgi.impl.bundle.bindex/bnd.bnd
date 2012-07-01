@@ -10,6 +10,7 @@ Private-Package: org.osgi.service.obr.*,\
 Bundle-Version: 3.0.0
 Bundle-Vendor: 			OSGi Alliance
 Bundle-Description: 	Provides a command line utility to index a set of bundles. This code can be run from the command line.
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Copyright: 		(c) Copyright OSGi Alliance, contains licensed code from kXML
 Bundle-License: 		http://www.apache.org/licenses/LICENSE-2.0;\
  description="This material is licensed under the Apache Software License, Version 2.0";\
@@ -18,7 +19,8 @@ Main-Class: 			org.osgi.impl.bundle.bindex.cli.Index
 
 Service-Component: *
 Bundle-ActivationPolicy: lazy
--buildpath: biz.aQute.bnd.annotation;version=latest,\
+-buildpath: ee.j2se;version='[1.5,1.6)',\
+	biz.aQute.bnd.annotation;version=latest,\
 	jar/ant.jar;version=file,\
 	jar/kxml2-min.jar;version=file,\
 	jar/org.osgi.service.obr.jar;version=file,\

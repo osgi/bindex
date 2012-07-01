@@ -200,6 +200,7 @@ public class FilterImpl {
 			throw new IllegalArgumentException(m + " " + tail);
 		}
 
+		@SuppressWarnings("unchecked")
 		private boolean compare(Object obj, int op, String s) {
 			if (obj == null) {
 				// No value is ok for a subset
@@ -284,13 +285,13 @@ public class FilterImpl {
 							case EQ:
 								return obj.equals(instance);
 							case LESS:
-								return ((Comparable) obj).compareTo(instance) < 0;
+								return ((Comparable<Object>) obj).compareTo(instance) < 0;
 							case GREATER:
-								return ((Comparable) obj).compareTo(instance) > 0;
+								return ((Comparable<Object>) obj).compareTo(instance) > 0;
 							case LE:
-								return ((Comparable) obj).compareTo(instance) <= 0;
+								return ((Comparable<Object>) obj).compareTo(instance) <= 0;
 							case GE:
-								return ((Comparable) obj).compareTo(instance) >= 0;
+								return ((Comparable<Object>) obj).compareTo(instance) >= 0;
 							}
 						}
 					} catch (Exception e) {
