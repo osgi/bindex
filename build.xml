@@ -14,10 +14,10 @@
   <target name="clean">
     <iterate target="clean"/>
   </target>
-  <target name="junit">
+  <target name="junit" description="Run the unit tests">
   	<iterate target="junit"/>
   </target>
-  <target name="test">
+  <target name="test" depends="junit" description="Run unit + integration tests">
   	<ant dir="org.osgi.impl.bundle.bindex2.test" target="test"/>
   </target>
 </project>
