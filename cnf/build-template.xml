@@ -56,7 +56,7 @@
 	<!--
 	     Test
 	-->
-	<target name="test" depends="build">
+	<target name="test" depends="build,junit">
 		<bndtest/>
 	</target>
 
