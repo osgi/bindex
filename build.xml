@@ -10,12 +10,16 @@
     </sequential>
   </macrodef>
 
+  <target name="clean">
+    <iterate target="clean"/>
+  </target>
+
   <target name="build">
     <ant dir="org.osgi.impl.bundle.repoindex.test" target="build"/>
   </target>
 
-  <target name="clean">
-    <iterate target="clean"/>
+  <target name="release">
+    <iterate target="release"/>
   </target>
 
   <target name="junit" description="Run the unit tests">
