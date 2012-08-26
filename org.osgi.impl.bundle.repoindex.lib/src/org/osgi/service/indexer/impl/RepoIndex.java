@@ -131,10 +131,6 @@ public class RepoIndex implements ResourceIndexer {
 	
 	private Tag generateResource(File file, Map<String, String> config) throws Exception {
 		
-		JarResource resource = new JarResource(file);
-		List<Capability> caps = new AddOnlyList<Capability>(new LinkedList<Capability>());
-		List<Requirement> reqs = new AddOnlyList<Requirement>(new LinkedList<Requirement>());
-		
 		// Read config settings and save in thread local state
 		if (config != null) {
 			URL rootURL;
@@ -155,6 +151,10 @@ public class RepoIndex implements ResourceIndexer {
 			bundleAnalyzer.setStateLocal(null);
 		}
 		
+		JarResource resource = new JarResource(file);
+		List<Capability> caps = new AddOnlyList<Capability>(new LinkedList<Capability>());
+		List<Requirement> reqs = new AddOnlyList<Requirement>(new LinkedList<Requirement>());
+
 		// Iterate over the analyzers
 		try {
 			synchronized (analyzers) {
@@ -172,6 +172,7 @@ public class RepoIndex implements ResourceIndexer {
 				}
 			}
 		} finally {
+			resource.close();
 			bundleAnalyzer.setStateLocal(null);
 		}
 		
