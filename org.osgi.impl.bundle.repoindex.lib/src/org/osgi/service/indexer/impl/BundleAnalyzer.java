@@ -203,6 +203,34 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		
 		return props;
 	}
+	
+	/**
+	 * Returns an osgi.ee capability name of bree
+	 * See http://www.osgi.org/Specifications/Reference
+	 * 
+	 * @param bree Bundle-RequiredExecutionEnvironment
+	 * @return Name of RequiredExecutionEnvironment
+	 */
+	private static String getBREEName(String bree){
+		if(bree!=null){
+			return bree.replaceAll("-[0-9]+\\.[0-9]+", "");
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns the version number of bree
+	 * @param bree Bundle-RequiredExecutionEnvironment
+	 * @return associated version number
+	 */
+	private static String getBREEVersion(String bree){
+		if(bree!=null){
+			return bree.substring(bree.lastIndexOf("-")+1);
+		} else {
+			return null;
+		}
+	}
 
 	private void doBundleAndHost(Resource resource, List<? super Capability> caps) throws Exception {
 		Builder bundleBuilder = new Builder().setNamespace(Namespaces.NS_WIRING_BUNDLE);
@@ -422,12 +450,12 @@ class BundleAnalyzer implements ResourceAnalyzer {
 		if (!brees.isEmpty()) {
 			if (brees.size() == 1) {
 				String bree = brees.keySet().iterator().next();
-				filter = String.format("(%s=%s)", Namespaces.NS_EE, bree);
+				filter = String.format("(&(%s=%s)(version=%s))", Namespaces.NS_EE, getBREEName(bree), getBREEVersion(bree));
 			} else {
 				StringBuilder builder = new StringBuilder().append("(|");
 				for (String bree : brees.keySet()) {
 					bree = OSGiHeader.removeDuplicateMarker(bree);
-					builder.append(String.format("(%s=%s)", Namespaces.NS_EE, bree));
+					builder.append(String.format("(&(%s=%s)(version=%s))", Namespaces.NS_EE, getBREEName(bree), getBREEVersion(bree)));
 				}
 				builder.append(')');
 				filter = builder.toString();
