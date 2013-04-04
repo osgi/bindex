@@ -123,6 +123,7 @@
 				</fileset>
 			</batchtest>
 		</junit>
+		<fail if="stop" message="junit tests failed"/>
 	</target>
 
 	<!--

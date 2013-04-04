@@ -1,6 +1,9 @@
 package org.example.tests.standalone;
 
-import static org.example.tests.utils.Utils.*;
+import static org.example.tests.utils.Utils.copyToTempFile;
+import static org.example.tests.utils.Utils.createTempDir;
+import static org.example.tests.utils.Utils.deleteWithException;
+import static org.example.tests.utils.Utils.readStream;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -13,8 +16,8 @@ import junit.framework.TestCase;
 
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.indexer.ResourceIndexer;
-import org.osgi.service.indexer.impl.RepoIndex;
 import org.osgi.service.indexer.impl.KnownBundleAnalyzer;
+import org.osgi.service.indexer.impl.RepoIndex;
 
 public class TestStandaloneLibrary extends TestCase {
 
@@ -53,7 +56,7 @@ public class TestStandaloneLibrary extends TestCase {
 	
 	public void testKnownBundlesExtra() throws Exception {
 		Properties extras = new Properties();
-		extras.setProperty("org.eclipse.equinox.ds;[1.4,1.5)", "cap@extra;extra=wibble");
+		extras.setProperty("org.eclipse.equinox.ds;[1.4,1.5)", "cap=extra;extra=wibble");
 		
 		KnownBundleAnalyzer knownBundlesAnalyzer = new KnownBundleAnalyzer();
 		knownBundlesAnalyzer.setKnownBundlesExtra(extras);
@@ -72,5 +75,20 @@ public class TestStandaloneLibrary extends TestCase {
 		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/org.eclipse.equinox.ds-1.4.0.extra-fragment.txt")), writer.toString().trim());
 		
 		deleteWithException(tempDir);	}
+	
+	public void testPlainJar() throws Exception {
+		RepoIndex indexer = new RepoIndex();
+		
+		StringWriter writer = new StringWriter();
+		File tempDir = createTempDir();
+		File tempFile = copyToTempFile(tempDir, "testdata/jcip-annotations.jar");
+
+		Map<String, String> config = new HashMap<String, String>();
+		config.put(ResourceIndexer.ROOT_URL, tempDir.getAbsoluteFile().toURL().toString());
+		indexer.indexFragment(Collections.singleton(tempFile), writer, config);
+		
+		assertEquals(readStream(TestStandaloneLibrary.class.getResourceAsStream("/testdata/plainjar.fragment.txt")), writer.toString().trim());
+		
+		deleteWithException(tempDir);		}
 
 }

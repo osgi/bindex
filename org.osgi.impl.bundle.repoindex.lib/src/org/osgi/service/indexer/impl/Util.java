@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.jar.Manifest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +49,23 @@ public class Util {
 		Version version = (versionStr != null) ? new Version(versionStr) : Version.emptyVersion;
 		return version;
 	}
+
+	public static MimeType getMimeType(Resource resource) throws IOException {
+		Manifest manifest = resource.getManifest();
+		if (manifest == null)
+			return MimeType.Jar;
+		String bsn = manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+		if (bsn == null)
+			return MimeType.Jar;
 		
+		String fragmentHost = manifest.getMainAttributes().getValue(Constants.FRAGMENT_HOST);
+		if (fragmentHost != null)
+			return MimeType.Fragment;
+		
+		return MimeType.Bundle;
+	}
+
+
 
 	public static void addVersionFilter(StringBuilder filter, VersionRange version, VersionKey key) {
 		if (version.isRange()) {

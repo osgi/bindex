@@ -36,10 +36,10 @@ Private-Package:\
 	org.osgi.service.log,\
 	${bindex-pkgs},\
 	${pojosr-pkgs},\
-	${osgi-pkgs},\
+	${osgi-pkgs}
 
 # Main headers
-Bundle-Version: 0.0.1
+Bundle-Version: 0.0.4.${tstamp}
 Bundle-Name: BIndex2: Repository Index Generator (Standalone)
 Main-Class: org.osgi.impl.bundle.bindex.cli.Index
 Bundle-Activator: org.osgi.service.indexer.osgi.Activator

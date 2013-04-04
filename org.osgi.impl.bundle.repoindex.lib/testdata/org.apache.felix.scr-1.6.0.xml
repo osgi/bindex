@@ -36,6 +36,7 @@
     <attribute name='osgi.extender' value='osgi.ds'/>
     <attribute name='version' type='Version' value='1.1.0'/>
     <directive name='uses' value='org.osgi.service.component'/>
+    <directive name='effective' value='active'/>
   </capability>
   <requirement namespace='osgi.wiring.package'>
     <directive name='filter' value='(&amp;(osgi.wiring.package=org.apache.felix.shell)(version&gt;=1.0.0))'/>
@@ -62,5 +63,8 @@
   <requirement namespace='osgi.wiring.package'>
     <directive name='filter' value='(&amp;(osgi.wiring.package=org.osgi.service.packageadmin)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))'/>
     <directive name='resolution' value='optional'/>
+  </requirement>
+  <requirement namespace='osgi.wiring.package'>
+    <directive name='filter' value='(&amp;(osgi.wiring.package=org.osgi.service.cm)(version&gt;=1.2.0)(!(version&gt;=2.0.0)))'/>
   </requirement>
 </resource>

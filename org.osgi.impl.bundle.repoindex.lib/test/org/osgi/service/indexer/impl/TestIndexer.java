@@ -1,14 +1,18 @@
 package org.osgi.service.indexer.impl;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,15 +23,13 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.mockito.ArgumentCaptor;
-import org.osgi.framework.Filter;
+import org.mockito.Mockito;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.indexer.Capability;
 import org.osgi.service.indexer.Requirement;
 import org.osgi.service.indexer.Resource;
 import org.osgi.service.indexer.ResourceAnalyzer;
 import org.osgi.service.indexer.ResourceIndexer;
-import org.osgi.service.indexer.impl.RepoIndex;
 import org.osgi.service.log.LogService;
 
 public class TestIndexer extends TestCase {
@@ -90,6 +92,10 @@ public class TestIndexer extends TestCase {
 	
 	public void testFragmentRequireSCR() throws Exception {
 		assertFragmentMatch("testdata/fragment-15.txt", "testdata/15-scr.jar");
+	}
+	
+	public void testFragmentOptionalRequireBundle() throws Exception {
+		assertFragmentMatch("testdata/fragment-16.txt", "testdata/16-optionalrequirebundle.jar");
 	}
 	
 	public void testFragmentRequireSCR1_0() throws Exception {
@@ -281,12 +287,27 @@ public class TestIndexer extends TestCase {
 	}
 	
 	public void testRecogniseFelixSCR() throws Exception {
-		Properties props = new Properties();
-		props.load(new FileInputStream("testdata/known-bundles.properties"));
-		
 		RepoIndex indexer = new RepoIndex();
-		indexer.addAnalyzer(new KnownBundleAnalyzer(props), FrameworkUtil.createFilter("(name=*)"));
+		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
 		assertFragmentMatch(indexer, "testdata/org.apache.felix.scr-1.6.0.xml", "testdata/org.apache.felix.scr-1.6.0.jar");
+	}
+	
+	public void testRecogniseAriesBlueprint() throws Exception {
+		RepoIndex indexer = new RepoIndex();
+		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
+		assertFragmentMatch(indexer, "testdata/org.apache.aries.blueprint-1.0.0.xml", "testdata/org.apache.aries.blueprint-1.0.0.jar");
+	}
+	
+	public void testRecogniseGeminiBlueprint() throws Exception {
+		RepoIndex indexer = new RepoIndex();
+		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
+		assertFragmentMatch(indexer, "testdata/gemini-blueprint-extender-1.0.0.RELEASE.xml", "testdata/gemini-blueprint-extender-1.0.0.RELEASE.jar");
+	}
+	
+	public void testRecogniseFelixJetty() throws Exception {
+		RepoIndex indexer = new RepoIndex();
+		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
+		assertFragmentMatch(indexer, "testdata/org.apache.felix.http.jetty-2.2.0.xml", "testdata/org.apache.felix.http.jetty-2.2.0.jar");
 	}
 	
 	public void testMacroExpansion() throws Exception {
@@ -296,5 +317,34 @@ public class TestIndexer extends TestCase {
 		RepoIndex indexer = new RepoIndex();
 		indexer.addAnalyzer(new KnownBundleAnalyzer(props), FrameworkUtil.createFilter("(name=*)"));
 		assertFragmentMatch(indexer, "testdata/org.apache.felix.eventadmin.xml", "testdata/org.apache.felix.eventadmin-1.2.14.jar");
+	}
+	
+	public void testFragmentRequireBlueprint() throws Exception {
+		assertFragmentMatch("testdata/fragment-17.txt", "testdata/17-blueprint1.jar");
+	}
+	
+	public void testFragmentRequireBlueprintUsingHeader() throws Exception {
+		assertFragmentMatch("testdata/fragment-18.txt", "testdata/18-blueprint2.jar");
+	}
+	
+	public void testFragmentBundleNativeCode() throws Exception {
+		assertFragmentMatch("testdata/fragment-19.txt", "testdata/19-bundlenativecode.jar");
+	}
+	
+	public void testFragmentBundleNativeCodeOptional() throws Exception {
+		assertFragmentMatch("testdata/fragment-20.txt", "testdata/20-bundlenativecode-optional.jar");
+	}
+	
+	public void testFragmentPlainJar() throws Exception {
+		LogService mockLog = Mockito.mock(LogService.class);
+		RepoIndex indexer = new RepoIndex(mockLog);
+		indexer.addAnalyzer(new KnownBundleAnalyzer(), FrameworkUtil.createFilter("(name=*)"));
+		
+		assertFragmentMatch(indexer, "testdata/fragment-plainjar.txt", "testdata/jcip-annotations.jar");
+		Mockito.verifyZeroInteractions(mockLog);
+	}
+	
+	public void testFragmentPlainJarWithVersion() throws Exception {
+		assertFragmentMatch("testdata/fragment-plainjar-versioned.txt", "testdata/jcip-annotations-2.5.6.wibble.jar");
 	}
 }
