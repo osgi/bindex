@@ -175,6 +175,7 @@ public class RepoIndex implements ResourceIndexer {
 				}
 			}
 		} finally {
+			resource.close();
 			bundleAnalyzer.setStateLocal(null);
 		}
 		
