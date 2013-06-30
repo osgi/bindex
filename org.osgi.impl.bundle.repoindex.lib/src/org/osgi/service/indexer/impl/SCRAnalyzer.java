@@ -53,7 +53,9 @@ public class SCRAnalyzer implements ResourceAnalyzer {
 		}
 
 		if (highest!= null) {
-			Requirement requirement = createRequirement(new VersionRange("[" + highest + ",2.0)"));
+			Version lower = new Version(highest.getMajor(), highest.getMinor(), 0);
+			Version upper = new Version(highest.getMajor() + 1, 0, 0);
+			Requirement requirement = createRequirement(new VersionRange(true, lower, upper, false));
 			reqs.add(requirement);
 		}
 	}
@@ -115,7 +117,7 @@ public class SCRAnalyzer implements ResourceAnalyzer {
 				else if (NS_1_1.equals(uri))
 					setVersion(new Version(1,1,0));
 				else if (NS_1_0.equals(uri))
-					setVersion(new Version(1,2,0));
+					setVersion(new Version(1,0,0));
 			}
 		}
 		

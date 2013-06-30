@@ -3,7 +3,7 @@
 	osgi.core;version=4.2,\
 	junit.osgi,\
 	lib/kxml2-min.jar;version=file,\
-	osgi.cmpn,\
+	osgi.cmpn;version=4.2,\
 	org.mockito.mockito-all;version='[1.8,1.9)'
 
 Bundle-Name: BIndex2: Repository Index Generator
@@ -30,4 +30,4 @@ Export-Package:\
 	org.osgi.service.indexer,\
 	org.osgi.service.log
 	
-Bundle-Version: 0.0.4.${tstamp}
+Bundle-Version: 1.0.5.${tstamp}
