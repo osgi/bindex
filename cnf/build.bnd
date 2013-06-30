@@ -14,3 +14,6 @@
 # Git-Descriptor: ${system-allow-fail;git describe --dirty --always}
 # Git-SHA: ${system-allow-fail;git rev-list -1 HEAD}
 
+Bundle-Copyright: OSGi Alliance
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
+Bundle-Vendor: OSGi Alliance
