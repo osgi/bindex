@@ -1,3 +1,0 @@
-Bundle-Version: 0.0.2
-Export-Package: org.osgi.service.indexer
--buildpath: junit.osgi
